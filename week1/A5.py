@@ -17,7 +17,7 @@ def naive_window_max(nums: list[int], k: int) -> list[int]:
     return answer
 
 def deque_window_max(nums: list[int], k: int) -> list[int]:
-    window = deque([], maxlen=k)
+    window = deque()
     answer = []
     for index, val in enumerate(nums):
         if window and window[0] < index - k + 1:  # очистка deque от старых элементов
@@ -25,7 +25,7 @@ def deque_window_max(nums: list[int], k: int) -> list[int]:
         while window and nums[window[-1]] <= val:  # подготовка к добавлению нового элемента
             window.pop()
         window.append(index)
-        if index >= k - 1 or index == len(nums) - 1:
+        if index >= k - 1:
             answer.append(nums[window[0]])
     return answer
 
@@ -43,4 +43,4 @@ if __name__ == "__main__":
     assert naive_window_max(nums, 10) == deque_window_max(nums, 10)
     assert naive_window_max([1, 2, 3, 4, 1, 2, 3, 1], 3) == [3, 4, 4, 4, 3, 3]
     assert deque_window_max([1, 2, 3, 4, 1, 2, 3, 1], 3) == [3, 4, 4, 4, 3, 3]
-    assert deque_window_max([1], 3) == [1]
+    assert deque_window_max([1], 3) == []
