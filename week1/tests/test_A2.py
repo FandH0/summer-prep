@@ -20,5 +20,12 @@ def test_abstract_shape():
         Shape()
 
 
+def test_subclass_without_area_is_abstract():
+    class Broken(Shape):
+        pass
+    with raises(TypeError):
+        Broken()
+
+
 def test_total_area():
     assert isclose(total_area([Rectangle(1, 2), Circle(1), Triangle(3, 4, 5)]), 8 + pi)

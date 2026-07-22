@@ -6,7 +6,10 @@ def test_eq_other():
     assert Money(12300, "RUB") != 12300
 
 
-@mark.parametrize("amount,expected", [(0, "0.00 RUB"), (5, "0.05 RUB"), (12000, "120.00 RUB"), (12050, "120.50 RUB"),])
+@mark.parametrize("amount,expected", [
+    (-5, "-0.05 RUB"), (-550, "-5.50 RUB"), (0, "0.00 RUB"),
+    (5, "0.05 RUB"), (12000, "120.00 RUB"), (12050, "120.50 RUB"),
+])
 def test_str(amount, expected):
     assert str(Money(amount, "RUB")) == expected
 
@@ -14,7 +17,7 @@ def test_str(amount, expected):
 @mark.parametrize("other", ["100", None, [1]])
 def test_add_foreign_type_raises_typeerror(other):
     with raises(TypeError):
-        Money("RUB", 100) + other
+        Money(100, "RUB") + other
 
 
 def test_add():

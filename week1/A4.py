@@ -11,8 +11,8 @@ def normalize(text: str) -> list[str]:
 
 
 # Counter
-def word_counter(text: str) -> dict[str: int]:
-    text = normalize(text)  # type(text) = list
+def word_counter(text: str) -> dict[str, int]:
+    text = normalize(text)
     count = Counter(text)
 
     return dict(count.most_common(5))

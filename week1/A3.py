@@ -5,7 +5,7 @@
 
 def chunked(iterable, n: int):
     if not n > 0:
-        raise ValueError
+        raise ValueError("Negative chunks unsupported")
     chunk = []
     for i in iterable:
         chunk.append(i)

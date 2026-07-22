@@ -30,7 +30,7 @@ class Money:
         if not isinstance(other, Money):
             return NotImplemented
         if self.currency != other.currency:
-            raise ValueError("Substitution of different currencies unsupported")
+            raise ValueError("Subtraction of different currencies unsupported")
         return Money(self.amount - other.amount, self.currency)
 
     def __mul__(self, other):
@@ -41,7 +41,9 @@ class Money:
     __rmul__ = __mul__
 
     def __str__(self):
-        return f"{self.amount // 100}.{self.amount % 100:02d} {self.currency}"
+        sign = "-" if self.amount < 0 else ""
+        major, minor = divmod(abs(self.amount), 100)
+        return f"{sign}{major}.{minor:02d} {self.currency}"
 
     def __eq__(self, other):
         if not isinstance(other, Money):
