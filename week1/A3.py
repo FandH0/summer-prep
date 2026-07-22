@@ -4,7 +4,8 @@
 # Запрещено предварительно превращать вход в список целиком — вход может быть бесконечным генератором.
 
 def chunked(iterable, n: int):
-    if not n > 0: raise ValueError
+    if not n > 0:
+        raise ValueError
     chunk = []
     for i in iterable:
         chunk.append(i)
@@ -13,6 +14,3 @@ def chunked(iterable, n: int):
             chunk = []
     if chunk:
         yield chunk
-
-if __name__ == '__main__':
-    print(list(chunked(range(7), 3)))

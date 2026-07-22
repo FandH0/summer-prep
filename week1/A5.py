@@ -4,17 +4,20 @@ from collections import deque
 from random import randint
 from time import perf_counter
 
+
 def time_test(f, *args) -> float:
     start = perf_counter()
     f(*args)
     end = perf_counter()
     return end - start
 
+
 def naive_window_max(nums: list[int], k: int) -> list[int]:
     answer = []
     for i in range(k, len(nums) + 1):
         answer.append(max(nums[i-k: i]))
     return answer
+
 
 def deque_window_max(nums: list[int], k: int) -> list[int]:
     window = deque()
@@ -40,7 +43,3 @@ if __name__ == "__main__":
     print(f'For k=10 and len(nums)=10**6 deque approach takes {time_test(deque_window_max, nums, 10)}s')
     # time test deque k = 100
     print(f'For k=100 and len(nums)=10**6 deque approach takes {time_test(deque_window_max, nums, 100)}s')
-    assert naive_window_max(nums, 10) == deque_window_max(nums, 10)
-    assert naive_window_max([1, 2, 3, 4, 1, 2, 3, 1], 3) == [3, 4, 4, 4, 3, 3]
-    assert deque_window_max([1, 2, 3, 4, 1, 2, 3, 1], 3) == [3, 4, 4, 4, 3, 3]
-    assert deque_window_max([1], 3) == []

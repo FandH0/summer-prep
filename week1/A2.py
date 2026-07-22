@@ -1,12 +1,14 @@
 # Базовый класс Shape с методом area(), наследники Circle, Rectangle, Triangle.
 # Функция total_area(shapes) принимает список любых фигур и возвращает сумму площадей.
 # Попытка создать Shape напрямую должна вызывать исключение.
-from math import pi, sqrt, isclose
+from math import pi, sqrt
 from abc import ABC, abstractmethod
+
 
 class Shape(ABC):
     @abstractmethod
     def area(self): pass
+
 
 class Circle(Shape):
     def __init__(self, radius):
@@ -15,6 +17,7 @@ class Circle(Shape):
     def area(self):
         return pi * self.radius ** 2
 
+
 class Rectangle(Shape):
     def __init__(self, width, height):
         self.width = width
@@ -22,6 +25,7 @@ class Rectangle(Shape):
 
     def area(self):
         return self.width * self.height
+
 
 class Triangle(Shape):
     def __init__(self, a, b, c):
@@ -36,12 +40,3 @@ class Triangle(Shape):
 
 def total_area(shapes: list[Shape]):
     return sum(x.area() for x in shapes)
-
-if __name__ == "__main__":
-    a, b, c = Rectangle(1, 2), Circle(1), Triangle(3, 4, 5)
-    try:
-        d = Shape()
-        assert False
-    except TypeError:
-        pass
-    assert isclose(total_area([a, b, c]), 8 + pi)

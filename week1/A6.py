@@ -12,44 +12,36 @@
 from dataclasses import dataclass
 from functools import total_ordering
 
+
 @dataclass(frozen=True)
 @total_ordering
 class Money:
+    amount: int
     currency: str
-    amount: int = 0
-
-    def __post_init__(self):
-        if self.amount < 0: raise ValueError
 
     def __add__(self, other):
         if not isinstance(other, Money):
             return NotImplemented
         if self.currency != other.currency:
-            raise ValueError
-        return Money(self.currency, self.amount + other.amount)
+            raise ValueError("Addition of different currencies unsupported")
+        return Money(self.amount + other.amount, self.currency)
 
     def __sub__(self, other):
         if not isinstance(other, Money):
             return NotImplemented
         if self.currency != other.currency:
-            raise ValueError
-        return Money(self.currency, self.amount - other.amount)
+            raise ValueError("Substitution of different currencies unsupported")
+        return Money(self.amount - other.amount, self.currency)
 
     def __mul__(self, other):
         if not isinstance(other, int):
             return NotImplemented
-        return Money(self.currency, self.amount * other)
+        return Money(self.amount * other, self.currency)
 
     __rmul__ = __mul__
 
-    def __hash__(self):
-        return hash((self.currency, self.amount))
-
-    def __repr__(self):
-        return f"Money({self.currency}, {self.amount / 100})"
-
     def __str__(self):
-        return f"{self.amount / 100} {self.currency}"
+        return f"{self.amount // 100}.{self.amount % 100:02d} {self.currency}"
 
     def __eq__(self, other):
         if not isinstance(other, Money):
@@ -60,5 +52,5 @@ class Money:
         if not isinstance(other, Money):
             return NotImplemented
         if self.currency != other.currency:
-            raise ValueError
+            raise ValueError("Comparison of different currencies unsupported")
         return self.amount < other.amount
