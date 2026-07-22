@@ -19,7 +19,7 @@ def timed(f):
     return wrapper
 
 
-def retry(times: int = 3, delay: float = 0.1):
+def retry(times: int = 3, delay: float = 0.1, exceptions: list = (ConnectionError, TimeoutError)):
     if not isinstance(times, int) or times <= 0:
         raise ValueError(f"Function can only run positive int amount of times. Not {times}")
     if not isinstance(delay, (int, float)) or delay < 0:
@@ -32,13 +32,11 @@ def retry(times: int = 3, delay: float = 0.1):
                 try:
                     answer = f(*args, **kwargs)
                     return answer
-                except Exception as e:
-                    if e not in (TypeError, SyntaxError, NameError) and i + 1 < times:
+                except exceptions:
+                    if i + 1 < times:
                         sleep(delay)
                     else:
-                        e.args = e.args + (f' Was not able to be used in {times} retries with {delay}s delay',)
-                        raise e
-            return None
+                        raise
         return wrapper
 
     return decorator
@@ -49,11 +47,11 @@ def memoize(f):
 
     @wraps(f)
     def wrapper(*args, **kwargs):
-        h = hash((tuple(kwargs.keys()), tuple(kwargs.values()), *args))
-        if h in cache:
-            return cache[h]
+        key = (*args, tuple(sorted(kwargs.values())))
+        if key in cache:
+            return cache[key]
         answer = f(*args, **kwargs)
-        cache[h] = answer
+        cache[key] = answer
         return answer
 
     return wrapper

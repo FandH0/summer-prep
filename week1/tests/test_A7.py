@@ -1,8 +1,5 @@
 import A7
-from pytest import mark, raises, MonkeyPatch
-from functools import lru_cache
-from time import perf_counter
-monkeypatch = MonkeyPatch()
+from pytest import mark, raises
 
 
 def func1(x):
@@ -54,14 +51,16 @@ def test_timed_name_doc():
 @mark.parametrize("times", [
     1, 2, 3
 ])
-def test_retry_delay_amount(times):
+def test_retry_delay_amount(monkeypatch, times):
+    count = times
     @A7.retry(times=times, delay=5)
-    def counter(count=[times]):
-        count[0] -= 1
-        if count[0] < 0:
+    def counter():
+        nonlocal count
+        count -= 1
+        if count < 0:
             return None
         else:
-            raise Exception
+            raise ConnectionError
 
     counts = 0
 
@@ -77,23 +76,25 @@ def test_retry_delay_amount(times):
     assert counts == times - 1
 
 
-@mark.parametrize("times", [
+@mark.parametrize("failure", [
     1, 2, 3
 ])
-def test_retry_return(times):
+def test_retry_return(monkeypatch, failure):
+    count = failure
     @A7.retry(times=4, delay=5)
-    def counter(count=[times]):
-        count[0] -= 1
-        if count[0] < 0:
-            return times
+    def counter():
+        nonlocal count
+        count -= 1
+        if count < 0:
+            return failure
         else:
-            raise Exception
+            raise ConnectionError
 
     def mock_sleep(delay):
         pass
 
     monkeypatch.setattr("A7.sleep", mock_sleep)
-    assert counter() == times
+    assert counter() == failure
 
 
 def test_retry_negative_delay():
@@ -128,27 +129,23 @@ def test_retry_name_doc():
     assert f_internal.__doc__ == "None"
 
 
-def test_memoize_time():
+def test_memoize_collision():
     @A7.memoize
-    def fib_memoize(a):
-        if a < 2:
-            return a
-        else:
-            return fib_memoize(a - 1) + fib_memoize(a - 2)
+    def f(x):
+        return x**2
 
-    @lru_cache()
-    def fib_lru_cache(a):
-        if a < 2:
-            return a
-        else:
-            return fib_lru_cache(a - 1) + fib_lru_cache(a - 2)
+    assert [4, 1, 0, 1, 4] == [f(2), f(1), f(0), f(-1), f(-2)]
 
-    t1 = perf_counter()
-    fib(35)
-    t2 = perf_counter()
-    fib_memoize(35)
-    t3 = perf_counter()
-    fib_lru_cache(35)
-    t4 = perf_counter()
-    assert t2 - t1 > t3 - t2  # simple recur > memoize
-    assert t2 - t1 > t4 - t2  # simple recur > lru_cache + memoize
+
+def test_memoize_call():
+    calls = []
+
+    @A7.memoize
+    def f(x):
+        calls.append(x)
+        return x
+
+    f(1)
+    f(1)
+    f(2)
+    assert calls == [1, 2]
