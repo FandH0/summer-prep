@@ -25,11 +25,12 @@ def retry(times: int = 3, delay: float = 0.1,
         raise ValueError(f"Function can only run positive int amount of times. Not {times}")
     if not isinstance(delay, (int, float)) or delay < 0:
         raise ValueError(f"Function can only be delayed for non-negative float time. Not {delay}")
+
     if isinstance(exceptions, tuple):
         for e in exceptions:
-            if not isinstance(e, type(BaseException)):
+            if not isinstance(e, type) or not issubclass(e, BaseException):
                 raise ValueError("Only BaseException type is allowed")
-    elif not isinstance(exceptions, type(BaseException)):
+    elif not isinstance(exceptions, type) or not issubclass(exceptions, BaseException):
         raise ValueError("Only BaseException type is allowed")
 
     def decorator(f):

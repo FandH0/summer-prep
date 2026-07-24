@@ -3,15 +3,17 @@ import time
 from pytest import raises, mark
 
 
-def test_class_timer_exception():
-    with raises(Exception):
-        with Timer() as t:
+@mark.parametrize("timer", (Timer, func_timer))
+def test_timer_exception(timer):
+    with raises(SystemExit):
+        with timer() as t:
             time.sleep(0.01)
-            raise Exception
+            raise SystemExit
     assert t.elapsed >= 0.01
 
 
-def test_class_timer_elapsed(monkeypatch):
+@mark.parametrize("timer", (Timer, func_timer))
+def test_timer_duration(monkeypatch, timer):
     sleep_time = 0
 
     def mocktime():
@@ -21,36 +23,15 @@ def test_class_timer_elapsed(monkeypatch):
         nonlocal sleep_time
         sleep_time += t
 
-    monkeypatch.setattr("A8.time", mocktime)
+    monkeypatch.setattr("A8.perf_counter", mocktime)
     monkeypatch.setattr("time.sleep", mocksleep)
-    with Timer() as t:
+    with timer() as t:
         time.sleep(10)
-    assert t.elapsed >= 10
-
-
-def test_func_timer_exception():
-    with raises(ZeroDivisionError):
-        with func_timer() as elapsed:
-            time.sleep(0.01)
-            raise ZeroDivisionError
-    assert elapsed[0] >= 0.01
-
-
-def test_func_timer_elapsed(monkeypatch):
-    sleep_time = 0
-
-    def mocktime():
-        return time.time() + sleep_time
-
-    def mocksleep(t):
-        nonlocal sleep_time
-        sleep_time += t
-
-    monkeypatch.setattr("A8.time", mocktime)
-    monkeypatch.setattr("time.sleep", mocksleep)
-    with func_timer() as elapsed:
-        time.sleep(10)
-    assert elapsed[0] >= 10
+        t1 = t.elapsed
+    time.sleep(10)
+    t2 = t.elapsed
+    assert t1 == 0  # внутри блока elapsed не изменяется
+    assert (20 >= t2 >= 10)
 
 
 @mark.parametrize("exceptions", ["0", (SystemExit, IndexError, 0), 0])

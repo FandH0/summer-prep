@@ -1,42 +1,44 @@
-from time import time
+from time import perf_counter
 from contextlib import contextmanager
+from types import SimpleNamespace
 
 
 class Timer:
     def __enter__(self):
-        self.start = time()
+        self.start = perf_counter()
+        self.end = None
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        self.end = perf_counter()
 
-    def __getattr__(self, item):
-        if item == 'elapsed':
-            return time() - self.start
-        raise AttributeError
+    @property
+    def elapsed(self):
+        if self.end:
+            return self.end - self.start
+        return 0
 
 
 @contextmanager
 def func_timer():
-    start = time()
+    start = perf_counter()
+    inner = SimpleNamespace(elapsed=0)
     try:
-        elapsed = [time() - start]
-        yield elapsed
+        yield inner
     finally:
-        elapsed[0] = time() - start
+        inner.elapsed = perf_counter() - start
 
 
 @contextmanager
-def suppress_and_log(exceptions: tuple[type(BaseException), ...] | type(BaseException)):
+def suppress_and_log(exceptions: tuple[type[BaseException], ...] | type[BaseException]):
     if isinstance(exceptions, tuple):
         for e in exceptions:
-            if not isinstance(e, type(BaseException)):
+            if not isinstance(e, type) or not issubclass(e, BaseException):
                 raise ValueError("Exception in tuple needs to be an instance of BaseException type")
-    elif not isinstance(exceptions, type(BaseException)):
+    elif not isinstance(exceptions, type) or not issubclass(exceptions, BaseException):
         raise ValueError("Exception needs to be an instance of BaseException type")
 
     try:
         yield
     except exceptions as e:
         print(type(e))
-        return True
