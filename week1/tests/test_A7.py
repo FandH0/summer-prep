@@ -99,6 +99,20 @@ def test_retry_return(monkeypatch, failure):
     assert counter() == failure
 
 
+def test_retry_not_intended_e():
+    counts = 0
+
+    @A7.retry(times=3)
+    def counter():
+        nonlocal counts
+        counts += 1
+        raise TypeError
+
+    with raises(TypeError):
+        counter()
+    assert counts == 1
+
+
 def test_retry_negative_delay():
     with raises(ValueError):
         A7.retry(delay=-10)
