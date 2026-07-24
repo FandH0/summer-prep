@@ -31,12 +31,12 @@ def test_timer_duration(monkeypatch, timer):
     time.sleep(10)
     t2 = t.elapsed
     assert t1 == 0  # внутри блока elapsed не изменяется
-    assert (20 >= t2 >= 10)
+    assert (15 >= t2 >= 10)
 
 
 @mark.parametrize("exceptions", ["0", (SystemExit, IndexError, 0), 0])
 def test_suppress_and_log_exception_type(exceptions):
-    with raises(ValueError, match="Exception"):
+    with raises(TypeError, match="exception"):
         with suppress_and_log(exceptions):
             pass
 

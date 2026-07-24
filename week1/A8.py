@@ -14,7 +14,7 @@ class Timer:
 
     @property
     def elapsed(self):
-        if self.end:
+        if self.end is not None:
             return self.end - self.start
         return 0
 
@@ -22,11 +22,11 @@ class Timer:
 @contextmanager
 def func_timer():
     start = perf_counter()
-    inner = SimpleNamespace(elapsed=0)
+    holder = SimpleNamespace(elapsed=0)
     try:
-        yield inner
+        yield holder
     finally:
-        inner.elapsed = perf_counter() - start
+        holder.elapsed = perf_counter() - start
 
 
 @contextmanager
@@ -34,9 +34,9 @@ def suppress_and_log(exceptions: tuple[type[BaseException], ...] | type[BaseExce
     if isinstance(exceptions, tuple):
         for e in exceptions:
             if not isinstance(e, type) or not issubclass(e, BaseException):
-                raise ValueError("Exception in tuple needs to be an instance of BaseException type")
+                raise TypeError("Must be an exception or tuple of exceptions")
     elif not isinstance(exceptions, type) or not issubclass(exceptions, BaseException):
-        raise ValueError("Exception needs to be an instance of BaseException type")
+        raise TypeError("Must be an exception or tuple of exceptions")
 
     try:
         yield
