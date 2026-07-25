@@ -27,16 +27,24 @@ def test_parse_correct_line_partition(line, answer):
       "1023-12-01T23:12:34 CRITICAL litter: ",],
      [A9.LogRecord(datetime.fromisoformat("1023-12-01T23:12:34"), "CRITICAL", "litter", " message for someone"),
       A9.LogRecord(datetime.fromisoformat("1023-12-01T23:12:34"), "CRITICAL", "litter", "")]),
+    (["", " ",
+      "1023-12-01T23:12:34 CRITICAL litter:message for someone",
+      "1023-12-0eeT23:12:34 CRITICAL litter:  message for someone",
+      "1023-12-01T23:12:34  CRITICAL litter:  message for someone",
+      "1023-12-01T23:12:34 CRITICAL1 litter:  message for someone",
+      "1023-12-01T23:12:34 CRITICAL  litter:  message for someone",
+      "1023-12-01T23:12:34 CRITICAL  :  message for someone",
+      "1023-12-01T23:12:34 CRITICAL litter  message for someone",],
+     []),
 ])
 def test_parse_broken_line_skip(iterable, answer):
-    logs = []
-
+    text_logs = []
+    parsed_logs = []
     def logger(text):
-        logs.append(text)
+        text_logs.append(text)
     # broken lines are skipped test
-    for i, log in enumerate(A9.parse(iterable, logger=logger)):
-        assert i < len(answer)
-        assert answer[i] == log
-
+    for log in A9.parse(iterable, logger=logger):
+        parsed_logs.append(log)
+    assert parsed_logs == answer
     # broken lines are logged test
-    assert len(logs) == len(iterable) - (i + 1)
+    assert len(text_logs) == len(iterable) - len(parsed_logs)
