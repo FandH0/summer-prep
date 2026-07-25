@@ -3,7 +3,7 @@ from datetime import datetime
 import A9
 
 
-# tests partition types, correct partition, message with ";", " " chars
+# tests partition types, correct partition, message with ":", " " chars
 @mark.parametrize("line, answer", [
     ("1023-12-01T23:12:34 CRITICAL litter:  message for someone",
      A9.LogRecord(datetime.fromisoformat("1023-12-01T23:12:34"), "CRITICAL", "litter", " message for someone")),
@@ -40,6 +40,7 @@ def test_parse_correct_line_partition(line, answer):
 def test_parse_broken_line_skip(iterable, answer):
     text_logs = []
     parsed_logs = []
+
     def logger(text):
         text_logs.append(text)
     # broken lines are skipped test
