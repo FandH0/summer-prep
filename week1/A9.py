@@ -38,7 +38,7 @@ def parse(lines: Iterable[str], logger=print) -> Iterator[LogRecord]:
             module, indent, rest = rest.partition(": ")
             if module == "":
                 raise ValueError("Blank module name or illegal intend or space")
-            elif " " in module or ";" in module:
+            if " " in module or ":" in module:
                 raise ValueError("Illegal module name or illegal intend or space")
 
             yield LogRecord(ts, level, module, rest)

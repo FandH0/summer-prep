@@ -17,6 +17,7 @@ def test_parse_correct_line_partition(line, answer):
 @mark.parametrize("iterable, answer", [
     (["", " ",
       "1023-12-01T23:12:34 CRITICAL litter:  message for someone",
+      "1023-12-01T23:12:34 CRITICAL litter:message for someone",
       "1023-12-0eeT23:12:34 CRITICAL litter:  message for someone",
       "1023-12-01T23:12:34  CRITICAL litter:  message for someone",
       "1023-12-01T23:12:34 CRITICAL1 litter:  message for someone",
