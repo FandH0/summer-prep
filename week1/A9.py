@@ -7,7 +7,7 @@ LEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
 
 @dataclass(frozen=True)
 class LogRecord:
-    ts: datetime
+    ts: datetime  # принимается любой валидный ISO-8601
     level: str
     module: str
     message: str
@@ -24,18 +24,18 @@ def parse(lines: Iterable[str], logger=print) -> Iterator[LogRecord]:
                 raise ValueError("Empty string")
             # если больше одного пробела или начинается с пробела, то сдвиг будет обнаружен дальше
             # если без пробела, то line == ""
-            dt, indent, rest = line.partition(" ")
+            dt, _, rest = line.partition(" ")
             ts = datetime.fromisoformat(dt)  # проверка по стандарту ISO-8601, бросает ValueError при несоответствии
             if ts.tzinfo is not None:
                 raise ValueError("Timezones unsupported")  # условие в специфике A9
 
-            level, indent, rest = rest.partition(" ")
+            level, _, rest = rest.partition(" ")
             if level not in LEVELS:
                 if level == "":
                     raise ValueError("Blank level name or illegal intend or space")
                 raise ValueError(f"Illegal level value: {level}")
 
-            module, indent, rest = rest.partition(": ")
+            module, _, rest = rest.partition(": ")
             if module == "":
                 raise ValueError("Blank module name or illegal intend or space")
             if " " in module or ":" in module:
