@@ -61,6 +61,8 @@ def read_lines(path: str | Path, encoding: str = "utf-8") -> Iterator[str]:
 def filter_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
     if level not in LEVELS:
         raise ValueError(f"Illegal level: {level}")
+    if not isinstance(logs, Iterable):
+        raise TypeError(f"logs should be iterable, not {type(logs)}")
 
     def generator_filter_level():
         for log in logs:
@@ -73,6 +75,8 @@ def filter_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
 def filter_min_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
     if level not in LEVELS:
         raise ValueError(f"Illegal level: {level}")
+    if not isinstance(logs, Iterable):
+        raise TypeError(f"logs should be iterable, not {type(logs)}")
 
     def generator_filter_level():
         for log in logs:
@@ -84,9 +88,9 @@ def filter_min_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecor
 
 def take(items: Iterable, n: int) -> Iterable:
     if not isinstance(items, Iterable):
-        raise TypeError(f"items should be an iterable, not: {type(n)}")
+        raise TypeError(f"items should be an iterable, not {type(n)}")
     if not isinstance(n, int):
-        raise TypeError(f"n should be an integer, not: {type(n)}")
+        raise TypeError(f"n should be an integer, not {type(n)}")
     if n < 0:
         raise ValueError(f"n cannot be less than 0: {n} < 0")
     items = iter(items)
