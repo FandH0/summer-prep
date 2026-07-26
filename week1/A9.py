@@ -93,13 +93,13 @@ def take(items: Iterable, n: int) -> Iterable:
         raise TypeError(f"n should be an integer, not {type(n)}")
     if n < 0:
         raise ValueError(f"n cannot be less than 0: {n} < 0")
-    items = iter(items)
 
     def generator_take():
-        for i in range(n):
-            item = next(items, None)
-            if item is None:
-                return
+        if n == 0:
+            return
+        for i, item in enumerate(items):
             yield item
+            if i + 1 == n:
+                return
 
     return generator_take()

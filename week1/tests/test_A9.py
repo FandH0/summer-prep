@@ -146,3 +146,17 @@ def test_take_wrong_type_args():
 def test_take_non_negative_n(n):
     iterable = list(range(10))
     assert list(A9.take(iterable, n)) == iterable[:n]
+
+
+def test_take_is_lazy():
+    counter = 0
+
+    def generator():
+        nonlocal counter
+        while True:
+            counter += 1
+            yield
+    gen = A9.take(generator(), 5)
+    for _ in gen:
+        pass
+    assert counter == 5
