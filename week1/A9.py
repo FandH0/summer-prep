@@ -1,5 +1,5 @@
-from collections.abc import Callable
-from typing import Iterator, Iterable
+from collections.abc import Callable, Iterable, Iterator
+from pathlib import Path
 from dataclasses import dataclass
 from datetime import datetime
 LEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
@@ -44,3 +44,9 @@ def parse(lines: Iterable[str], logger=print) -> Iterator[LogRecord]:
             yield LogRecord(ts, level, module, rest)
         except ValueError as e:
             logger(f"line: {line} is broken because: {e}")
+
+
+def read_lines(path: str | Path) -> Iterator[str]:
+    with open(path) as f:
+        for line in f:
+            yield line.removesuffix('\n')  # РЕШЕНИЕ: пробелы с правой стороны лога остаются в message

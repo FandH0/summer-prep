@@ -49,3 +49,19 @@ def test_parse_broken_line_skip(iterable, answer):
     assert parsed_logs == answer
     # broken lines are logged test
     assert len(text_logs) == len(iterable) - len(parsed_logs)
+
+
+def test_read_lines_empty_file(tmp_path):
+    path = tmp_path / "empty_file.log"
+    path.touch()
+    assert list(A9.read_lines(path)) == []
+
+
+@mark.parametrize("text, answer", [
+    ("first \nsecond \nthird \n", ["first ", "second ", "third "]),
+    ("first \nsecond \nthird", ["first ", "second ", "third"]),
+])
+def test_read_lines_ending_symbol(tmp_path, text, answer):
+    f = tmp_path / "log_file.log"
+    f.write_text(text)
+    assert list(A9.read_lines(f)) == answer
