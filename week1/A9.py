@@ -46,7 +46,7 @@ def parse(lines: Iterable[str], logger=print) -> Iterator[LogRecord]:
             logger(f"line: {line} is broken because: {e}")
 
 
-def read_lines(path: str | Path) -> Iterator[str]:
-    with open(path) as f:
+def read_lines(path: str | Path, encoding: str = "utf-8") -> Iterator[str]:
+    with open(path, encoding=encoding) as f:
         for line in f:
             yield line.removesuffix('\n')  # РЕШЕНИЕ: пробелы с правой стороны лога остаются в message
