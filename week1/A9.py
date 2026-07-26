@@ -2,7 +2,7 @@ from collections.abc import Callable, Iterable, Iterator
 from pathlib import Path
 from dataclasses import dataclass
 from datetime import datetime
-LEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
+LEVELS = {'DEBUG': 0, 'INFO': 1, 'WARNING': 2, 'ERROR': 3, 'CRITICAL': 4}
 
 
 @dataclass(frozen=True)
@@ -65,6 +65,18 @@ def filter_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
     def generator_filter_level():
         for log in logs:
             if log.level == level:
+                yield log
+
+    return generator_filter_level()
+
+
+def filter_min_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
+    if level not in LEVELS:
+        raise ValueError(f"Illegal level: {level}")
+
+    def generator_filter_level():
+        for log in logs:
+            if LEVELS[log.level] >= LEVELS[level]:
                 yield log
 
     return generator_filter_level()

@@ -107,3 +107,17 @@ def test_filter_level_check(level, answer):
             A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "WARNING", "", ""),
             A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", "")]
     assert list(A9.filter_level(logs, level)) == answer
+
+
+@mark.parametrize("level, answer", [
+    ("CRITICAL", [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "CRITICAL", "", "")]),
+    ("ERROR", [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "CRITICAL", "", ""),
+               A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", ""),
+               A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", "")]),
+])
+def test_filter_min_level_check(level, answer):
+    logs = [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "CRITICAL", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "WARNING", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", "")]
+    assert list(A9.filter_min_level(logs, level)) == answer
