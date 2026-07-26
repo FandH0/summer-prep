@@ -123,6 +123,22 @@ def test_filter_min_level_check(level, answer):
     assert list(A9.filter_min_level(logs, level)) == answer
 
 
+@mark.parametrize("filter_func", (A9.filter_level, A9.filter_min_level))
+def test_filter_is_lazy(filter_func):
+    counter = 0
+
+    def generator():
+        nonlocal counter
+        for _ in range(100):
+            counter += 1
+            yield A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", "")
+
+    filter_gen = filter_func(generator(), "ERROR")
+    for _ in range(5):
+        next(filter_gen)
+    assert counter == 5
+
+
 def test_take_infinite_source():
     def infinite_source():
         while True:
@@ -142,7 +158,7 @@ def test_take_wrong_type_args():
         A9.take([], [])
 
 
-@mark.parametrize("n", [0, 1, 5, 15])
+@mark.parametrize("n", (0, 1, 5, 15))
 def test_take_non_negative_n(n):
     iterable = list(range(10))
     assert list(A9.take(iterable, n)) == iterable[:n]
@@ -153,10 +169,10 @@ def test_take_is_lazy():
 
     def generator():
         nonlocal counter
-        while True:
+        for _ in range(100):
             counter += 1
             yield
-    gen = A9.take(generator(), 5)
-    for _ in gen:
+
+    for _ in A9.take(generator(), 5):
         pass
     assert counter == 5
