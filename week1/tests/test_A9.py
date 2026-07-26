@@ -144,5 +144,5 @@ def test_take_wrong_type_args():
 
 @mark.parametrize("n", [0, 1, 5, 15])
 def test_take_non_negative_n(n):
-    l = list(range(10))
-    assert list(A9.take(l, n)) == l[:n]
+    iterable = list(range(10))
+    assert list(A9.take(iterable, n)) == iterable[:n]
