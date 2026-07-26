@@ -74,3 +74,15 @@ def test_read_lines_init_check(tmp_path):
         _ = A9.read_lines("file_dont_exist")
     with raises(LookupError):
         _ = A9.read_lines(f, encoding="encoding_dont_exist")
+
+
+def test_read_lines_is_lazy(tmp_path):
+    path = tmp_path / "big.log"
+    good = b"\n".join(b"line %d" % i for i in range(1000))  # переполнение буфера TextIOWrapper
+    path.write_bytes(good + b"\n" + b"\xff\xfe broken line\n")  # сломанная строка в конце
+
+    log = A9.read_lines(path)
+    assert next(log).startswith("line 0")
+
+    with raises(UnicodeDecodeError):
+        list(log)
