@@ -1,4 +1,4 @@
-from pytest import mark
+from pytest import mark, raises
 from datetime import datetime
 import A9
 
@@ -65,3 +65,12 @@ def test_read_lines_ending_symbol(tmp_path, text, answer):
     f = tmp_path / "log_file.log"
     f.write_text(text)
     assert list(A9.read_lines(f)) == answer
+
+
+def test_read_lines_init_check(tmp_path):
+    f = tmp_path / "file"
+    f.touch()
+    with raises(FileNotFoundError):
+        _ = A9.read_lines("file_dont_exist")
+    with raises(LookupError):
+        _ = A9.read_lines(f, encoding="encoding_dont_exist")

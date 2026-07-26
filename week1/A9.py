@@ -47,6 +47,11 @@ def parse(lines: Iterable[str], logger=print) -> Iterator[LogRecord]:
 
 
 def read_lines(path: str | Path, encoding: str = "utf-8") -> Iterator[str]:
-    with open(path, encoding=encoding) as f:
-        for line in f:
-            yield line.removesuffix('\n')  # РЕШЕНИЕ: пробелы с правой стороны лога остаются в message
+    with open(path, encoding=encoding):  # проверка на существование файла и кодировки при инициализации
+        pass
+    def generator_read_lines():
+        with open(path, encoding=encoding) as f:
+            for line in f:
+                yield line.removesuffix('\n')  # РЕШЕНИЕ: пробелы с правой стороны лога остаются в message
+
+    return generator_read_lines()
