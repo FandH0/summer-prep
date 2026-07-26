@@ -80,3 +80,22 @@ def filter_min_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecor
                 yield log
 
     return generator_filter_level()
+
+
+def take(items: Iterable, n: int) -> Iterable:
+    if not isinstance(items, Iterable):
+        raise TypeError(f"items should be an iterable, not: {type(n)}")
+    if not isinstance(n, int):
+        raise TypeError(f"n should be an integer, not: {type(n)}")
+    if n < 0:
+        raise ValueError(f"n cannot be less than 0: {n} < 0")
+    items = iter(items)
+
+    def generator_take():
+        for i in range(n):
+            item = next(items, None)
+            if item is None:
+                return
+            yield item
+
+    return generator_take()

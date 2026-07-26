@@ -121,3 +121,28 @@ def test_filter_min_level_check(level, answer):
             A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "WARNING", "", ""),
             A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", "")]
     assert list(A9.filter_min_level(logs, level)) == answer
+
+
+def test_take_infinite_source():
+    def infinite_source():
+        while True:
+            yield 1
+    assert list(A9.take(infinite_source(), 3)) == [1, 1, 1]
+
+
+def test_take_negative_n():
+    with raises(ValueError):
+        A9.take([], -1)
+
+
+def test_take_wrong_type_args():
+    with raises(TypeError):
+        A9.take(1, 1)
+    with raises(TypeError):
+        A9.take([], [])
+
+
+@mark.parametrize("n", [0, 1, 5, 15])
+def test_take_non_negative_n(n):
+    l = list(range(10))
+    assert list(A9.take(l, n)) == l[:n]
