@@ -56,3 +56,15 @@ def read_lines(path: str | Path, encoding: str = "utf-8") -> Iterator[str]:
                 yield line.removesuffix('\n')  # РЕШЕНИЕ: пробелы с правой стороны лога остаются в message
 
     return generator_read_lines()
+
+
+def filter_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
+    if level not in LEVELS:
+        raise ValueError(f"Illegal level: {level}")
+
+    def generator_filter_level():
+        for log in logs:
+            if log.level == level:
+                yield log
+
+    return generator_filter_level()

@@ -86,3 +86,24 @@ def test_read_lines_is_lazy(tmp_path):
 
     with raises(UnicodeDecodeError):
         list(log)
+
+
+@mark.parametrize("level", ["error", "LEVEL DONT EXIST"])
+def test_filter_level_illegal_error(level):
+    with raises(ValueError):
+        A9.filter_level([], level)
+
+
+@mark.parametrize("level, answer", [
+    ("CRITICAL", [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "CRITICAL", "", ""),]),
+    ("ERROR", [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", ""),
+               A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", "")]),
+    ("WARNING", [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "WARNING", "", ""),]),
+    ("INFO", []), ("DEBUG", [])
+])
+def test_filter_level_check(level, answer):
+    logs = [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "CRITICAL", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "WARNING", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "ERROR", "", "")]
+    assert list(A9.filter_level(logs, level)) == answer
