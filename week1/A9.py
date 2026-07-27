@@ -86,15 +86,15 @@ def filter_min_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecor
     if not isinstance(logs, Iterable):
         raise TypeError(f"logs should be iterable, not {type(logs)}")
 
-    def generator_filter_level():
+    def generator_filter_min_level():
         for log in logs:
             if LEVELS[log.level] >= LEVELS[level]:
                 yield log
 
-    return generator_filter_level()
+    return generator_filter_min_level()
 
 
-def take(items: Iterable, n: int) -> Iterable:
+def take(items: Iterable, n: int) -> Iterator:
     if not isinstance(items, Iterable):
         raise TypeError(f"items should be an iterable, not {type(items)}")
     if not isinstance(n, int) or isinstance(n, bool):  # РЕШЕНИЕ: не принимает bool: True == 1 и False == 0
@@ -113,7 +113,7 @@ def take(items: Iterable, n: int) -> Iterable:
     return generator_take()
 
 
-def take_islice(items: Iterable, n: int) -> Iterable:
+def take_islice(items: Iterable, n: int) -> Iterator:
     if not isinstance(items, Iterable):
         raise TypeError(f"items should be an iterable, not {type(items)}")
     if not isinstance(n, int) or isinstance(n, bool):  # РЕШЕНИЕ: не принимает bool: True == 1 и False == 0

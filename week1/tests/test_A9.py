@@ -103,10 +103,9 @@ def test_filter_level_illegal_iter(filter_func):
     with raises(TypeError):
         filter_func(0, "INFO")
     with raises(KeyError):
-        for _ in filter_func(
-            [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "LEVEL_DONT_EXIST", "", ""),],
-            "INFO"):
-            pass
+        next(filter_func(
+                [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "LEVEL_DONT_EXIST", "", ""),], "INFO"
+            ))
 
 
 @mark.parametrize("level, answer", [
