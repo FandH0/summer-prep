@@ -132,7 +132,7 @@ def top_modules(logs: Iterable[LogRecord], n: int) -> list[tuple[str, int]]:
     if not isinstance(logs, Iterable):
         raise TypeError(f"logs should be iterable: {type(logs)}")
     if not isinstance(n, int) or isinstance(n, bool):
-        raise TypeError(f"n should be an integer: {type(logs)}")
+        raise TypeError(f"n should be an integer: {type(n)}")
     if n < 0:
         raise ValueError(f"n should be a non-negative integer: {n}")
 

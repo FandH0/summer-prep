@@ -8,7 +8,7 @@ def log_file(tmp_path):
     file = tmp_path / "log_file"
     file.write_text("1023-12-01T23:12:34 INFO db: message for someone\n"          # correct
                     "2023-12-01T23:12:34 CRITICAL db: message for someone\n"      # correct
-                    ""                                                            # broken
+                    "\n"                                                            # broken
                     "31023-12aedadfa23:12:34 CRITICe asdsage for someonf\n"       # broken
                     "1023-01-01T23:12:34 CRITICAL token: message for someone\n"   # correct
                     "1023-12-01T23:12:32 WARNING db: message for someone\n"       # correct
