@@ -74,7 +74,7 @@ def filter_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
 
     def generator_filter_level():
         for log in logs:
-            if log.level == level:
+            if LEVELS[log.level] == LEVELS[level]:
                 yield log
 
     return generator_filter_level()

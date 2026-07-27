@@ -93,9 +93,20 @@ def test_read_lines_is_lazy(tmp_path):
 
 
 @mark.parametrize("level", ["error", "LEVEL DONT EXIST"])
-def test_filter_level_illegal_error(level):
+def test_filter_level_illegal_level(level):
     with raises(ValueError):
         A9.filter_level([], level)
+
+
+@mark.parametrize("filter_func", [A9.filter_level, A9.filter_min_level])
+def test_filter_level_illegal_iter(filter_func):
+    with raises(TypeError):
+        filter_func(0, "INFO")
+    with raises(KeyError):
+        for _ in filter_func(
+            [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "LEVEL_DONT_EXIST", "", ""),],
+            "INFO"):
+            pass
 
 
 @mark.parametrize("level, answer", [
