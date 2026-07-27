@@ -1,6 +1,23 @@
-from pytest import mark, raises
+from pytest import mark, raises, fixture
 from datetime import datetime
 import A9
+
+
+@fixture
+def log_file(tmp_path):
+    file = tmp_path / "log_file"
+    file.write_text("1023-12-01T23:12:34 INFO db: message for someone\n"          # correct
+                    "2023-12-01T23:12:34 CRITICAL db: message for someone\n"      # correct
+                    ""                                                            # broken
+                    "31023-12aedadfa23:12:34 CRITICe asdsage for someonf\n"       # broken
+                    "1023-01-01T23:12:34 CRITICAL token: message for someone\n"   # correct
+                    "1023-12-01T23:12:32 WARNING db: message for someone\n"       # correct
+                    "1023-01-01T23:12:34 CRITICAL auth: message for someone\n"    # correct
+                    "1223-12-01T23:12:34 WARNING linter: message for someone\n"   # correct
+                    "1023-01-01T23:12:34 INFO linter: message for someone\n"      # correct
+                    "1023-01-01T23:12:34 CRITICAL token: message for someone\n"   # correct
+                    "2023-13-01T23:12:34 CRITICAL db: message for someone")       # broken
+    return file
 
 
 # tests partition types, correct partition, message with ":", " " chars
@@ -262,3 +279,17 @@ def test_group_by_date_unsorted_logs():
               (datetime.fromisoformat("1234-12-01T23:12:37"), logs[5:]),]
     # разделение 1234-12-01T23:12:37 на две группы
     assert list(A9.group_by_date(logs)) == answer
+
+
+@mark.parametrize("n, answer", [
+    (5, [("db", 3), ("auth", 1), ("token", 1)]),
+    (6, [("db", 3), ("auth", 1), ("linter", 1)]),
+    (7, [("db", 3), ("linter", 2), ("auth", 1)]),
+    (8, [("db", 3), ("linter", 2), ("token", 2)]),
+    (100, [("db", 3), ("linter", 2), ("token", 2)]),
+])
+def test_chain_read_to_top_modules(log_file, n, answer):
+    r = A9.read_lines(log_file)
+    p = A9.parse(r)
+    logs = A9.take(p, n)
+    assert A9.top_modules(logs, 3) == answer
