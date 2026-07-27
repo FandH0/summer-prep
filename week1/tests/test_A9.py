@@ -173,7 +173,9 @@ def test_take_wrong_type_args(take_func):
     with raises(TypeError):
         take_func(1, 1)
     with raises(TypeError):
-        take_func([], [])
+        take_func([], True)
+    with raises(TypeError):
+        take_func([], "string")
 
 
 @mark.parametrize("take_func", (A9.take, A9.take_islice))
