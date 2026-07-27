@@ -143,32 +143,37 @@ def test_filter_is_lazy(filter_func):
     assert counter == 5
 
 
-def test_take_infinite_source():
+@mark.parametrize("take_func", (A9.take, A9.take_islice))
+def test_take_infinite_source(take_func):
     def infinite_source():
         while True:
             yield 1
-    assert list(A9.take(infinite_source(), 3)) == [1, 1, 1]
+    assert list(take_func(infinite_source(), 3)) == [1, 1, 1]
 
 
-def test_take_negative_n():
+@mark.parametrize("take_func", (A9.take, A9.take_islice))
+def test_take_negative_n(take_func):
     with raises(ValueError):
-        A9.take([], -1)
+        take_func([], -1)
 
 
-def test_take_wrong_type_args():
+@mark.parametrize("take_func", (A9.take, A9.take_islice))
+def test_take_wrong_type_args(take_func):
     with raises(TypeError):
-        A9.take(1, 1)
+        take_func(1, 1)
     with raises(TypeError):
-        A9.take([], [])
+        take_func([], [])
 
 
+@mark.parametrize("take_func", (A9.take, A9.take_islice))
 @mark.parametrize("n", (0, 1, 5, 15))
-def test_take_non_negative_n(n):
+def test_take_non_negative_n(take_func, n):
     iterable = list(range(10))
-    assert list(A9.take(iterable, n)) == iterable[:n]
+    assert list(take_func(iterable, n)) == iterable[:n]
 
 
-def test_take_is_lazy():
+@mark.parametrize("take_func", (A9.take, A9.take_islice))
+def test_take_is_lazy(take_func):
     counter = 0
 
     def generator():
@@ -177,6 +182,6 @@ def test_take_is_lazy():
             counter += 1
             yield
 
-    for _ in A9.take(generator(), 5):
+    for _ in take_func(generator(), 5):
         pass
     assert counter == 5

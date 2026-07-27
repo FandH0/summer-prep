@@ -3,6 +3,7 @@ from pathlib import Path
 from codecs import lookup
 from dataclasses import dataclass
 from datetime import datetime
+from itertools import islice
 LEVELS = {'DEBUG': 0, 'INFO': 1, 'WARNING': 2, 'ERROR': 3, 'CRITICAL': 4}
 
 
@@ -95,7 +96,7 @@ def filter_min_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecor
 
 def take(items: Iterable, n: int) -> Iterable:
     if not isinstance(items, Iterable):
-        raise TypeError(f"items should be an iterable, not {type(n)}")
+        raise TypeError(f"items should be an iterable, not {type(items)}")
     if not isinstance(n, int):
         raise TypeError(f"n should be an integer, not {type(n)}")
     if n < 0:
@@ -110,3 +111,14 @@ def take(items: Iterable, n: int) -> Iterable:
                 return
 
     return generator_take()
+
+
+def take_islice(items: Iterable, n: int) -> Iterable:
+    if not isinstance(items, Iterable):
+        raise TypeError(f"items should be an iterable, not {type(items)}")
+    if not isinstance(n, int):
+        raise TypeError(f"n should be an integer, not {type(n)}")
+    if n < 0:
+        raise ValueError(f"n cannot be less than 0: {n} < 0")
+
+    return islice(items, n)
