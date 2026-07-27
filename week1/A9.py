@@ -94,13 +94,17 @@ def filter_min_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecor
     return generator_filter_min_level()
 
 
-def take(items: Iterable, n: int) -> Iterator:
+def _validate_take(items: Iterable, n: int):
     if not isinstance(items, Iterable):
         raise TypeError(f"items should be an iterable, not {type(items)}")
     if not isinstance(n, int) or isinstance(n, bool):  # РЕШЕНИЕ: не принимает bool: True == 1 и False == 0
         raise TypeError(f"n should be an integer, not {type(n)}")
     if n < 0:
         raise ValueError(f"n cannot be less than 0: {n} < 0")
+
+
+def take(items: Iterable, n: int) -> Iterator:
+    _validate_take(items, n)
 
     def generator_take():
         if n == 0:
@@ -114,11 +118,6 @@ def take(items: Iterable, n: int) -> Iterator:
 
 
 def take_islice(items: Iterable, n: int) -> Iterator:
-    if not isinstance(items, Iterable):
-        raise TypeError(f"items should be an iterable, not {type(items)}")
-    if not isinstance(n, int) or isinstance(n, bool):  # РЕШЕНИЕ: не принимает bool: True == 1 и False == 0
-        raise TypeError(f"n should be an integer, not {type(n)}")
-    if n < 0:
-        raise ValueError(f"n cannot be less than 0: {n} < 0")
+    _validate_take(items, n)
 
     return islice(items, n)
