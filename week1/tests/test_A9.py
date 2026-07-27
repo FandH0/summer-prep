@@ -196,3 +196,32 @@ def test_take_is_lazy(take_func):
     for _ in take_func(generator(), 5):
         pass
     assert counter == 5
+
+
+def test_top_modules_empty_iter():
+    assert A9.top_modules([], 10) == []
+
+
+def test_top_modules_negative_n():
+    with raises(ValueError):
+        A9.top_modules([], -10)
+
+
+@mark.parametrize("n", (True, "string", [], None))
+def test_top_modules_wrong_type_args(n):
+    with raises(TypeError):
+        A9.top_modules(1, 1)
+    with raises(TypeError):
+        A9.top_modules([1, 2, 3], 1)
+    with raises(TypeError):
+        A9.top_modules([], None)
+
+
+def test_top_modules_alphabet_check():
+    logs = [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "", "ABC", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "", "ABC", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "", "D", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "", "A", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "", "C", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "", "B", ""),]
+    assert A9.top_modules(logs, 3) == [("ABC", 2), ("A", 1), ("B", 1)]

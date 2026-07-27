@@ -1,4 +1,5 @@
 from collections.abc import Callable, Iterable, Iterator
+from collections import Counter
 from pathlib import Path
 from codecs import lookup
 from dataclasses import dataclass
@@ -124,5 +125,23 @@ def take(items: Iterable, n: int) -> Iterator:
 
 def take_islice(items: Iterable, n: int) -> Iterator:
     _validate_take(items, n)
-
     return islice(items, n)
+
+
+def top_modules(logs: Iterable[LogRecord], n: int) -> list[tuple[str, int]]:
+    if not isinstance(logs, Iterable):
+        raise TypeError(f"logs should be iterable: {type(logs)}")
+    if not isinstance(n, int) or isinstance(n, bool):
+        raise TypeError(f"n should be an integer: {type(logs)}")
+    if n < 0:
+        raise ValueError(f"n should be a non-negative integer: {n}")
+
+    def log_module() -> Iterator[str]:
+        for log in logs:
+            if not isinstance(log, LogRecord):
+                raise TypeError(f"logs iterable should have only LogRecord type: {type(log)}")
+            yield log.module
+
+    log_counter = Counter(log_module())
+    # сортировка по количеству упоминаний, затем по букве названия
+    return sorted(log_counter.most_common(), key=lambda x: (-x[1], x[0]))[:n]
