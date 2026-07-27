@@ -102,7 +102,7 @@ def test_filter_level_illegal_level(level):
 def test_filter_level_illegal_iter(filter_func):
     with raises(TypeError):
         filter_func(0, "INFO")
-    with raises(KeyError):
+    with raises(ValueError):
         next(filter_func(
                 [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "LEVEL_DONT_EXIST", "", ""),], "INFO"
             ))
@@ -168,13 +168,12 @@ def test_take_negative_n(take_func):
 
 
 @mark.parametrize("take_func", (A9.take, A9.take_islice))
-def test_take_wrong_type_args(take_func):
+@mark.parametrize("n", (True, "string", [], None))
+def test_take_wrong_type_args(take_func, n):
     with raises(TypeError):
         take_func(1, 1)
     with raises(TypeError):
-        take_func([], True)
-    with raises(TypeError):
-        take_func([], "string")
+        take_func([], n)
 
 
 @mark.parametrize("take_func", (A9.take, A9.take_islice))

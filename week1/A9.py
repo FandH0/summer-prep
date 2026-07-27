@@ -66,14 +66,20 @@ def read_lines(path: str | Path, encoding: str = "utf-8") -> Iterator[str]:
     return generator_read_lines()
 
 
-def filter_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
+def _validate_filter(logs: Iterable[LogRecord], level: str) -> None:
     if level not in LEVELS:
         raise ValueError(f"Illegal level: {level}")
     if not isinstance(logs, Iterable):
         raise TypeError(f"logs should be iterable, not {type(logs)}")
 
+
+def filter_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
+    _validate_filter(logs, level)
+
     def generator_filter_level():
         for log in logs:
+            if log.level not in LEVELS:
+                raise ValueError(f"Log has unknown level: {log.level}")
             if LEVELS[log.level] == LEVELS[level]:
                 yield log
 
@@ -81,20 +87,19 @@ def filter_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
 
 
 def filter_min_level(logs: Iterable[LogRecord], level: str) -> Iterator[LogRecord]:
-    if level not in LEVELS:
-        raise ValueError(f"Illegal level: {level}")
-    if not isinstance(logs, Iterable):
-        raise TypeError(f"logs should be iterable, not {type(logs)}")
+    _validate_filter(logs, level)
 
     def generator_filter_min_level():
         for log in logs:
+            if log.level not in LEVELS:
+                raise ValueError(f"Log has unknown level: {log.level}")
             if LEVELS[log.level] >= LEVELS[level]:
                 yield log
 
     return generator_filter_min_level()
 
 
-def _validate_take(items: Iterable, n: int):
+def _validate_take(items: Iterable, n: int) -> None:
     if not isinstance(items, Iterable):
         raise TypeError(f"items should be an iterable, not {type(items)}")
     if not isinstance(n, int) or isinstance(n, bool):  # РЕШЕНИЕ: не принимает bool: True == 1 и False == 0
