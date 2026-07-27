@@ -3,7 +3,7 @@ from collections import Counter
 from pathlib import Path
 from codecs import lookup
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, date
 from itertools import islice, groupby
 LEVELS = {'DEBUG': 0, 'INFO': 1, 'WARNING': 2, 'ERROR': 3, 'CRITICAL': 4}
 
@@ -147,18 +147,18 @@ def top_modules(logs: Iterable[LogRecord], n: int) -> list[tuple[str, int]]:
     return sorted(log_counter.most_common(), key=lambda x: (-x[1], x[0]))[:n]
 
 
-def group_by_date(logs: Iterable[LogRecord]) -> Iterator[tuple[datetime, list[LogRecord]]]:
+def group_by_date(logs: Iterable[LogRecord]) -> Iterator[tuple[date, list[LogRecord]]]:
     """требует отсортированный logs по дате, иначе элементы с одной датой могут быть учтены в разных tuple"""
     if not isinstance(logs, Iterable):
         raise TypeError(f"logs should be iterable: {type(logs)}")
 
-    def log_datetime(log: LogRecord) -> datetime:
+    def log_date(log: LogRecord) -> date:
         if not isinstance(log, LogRecord):
             raise TypeError(f"logs iterable should have only LogRecord type: {type(log)}")
-        return log.ts
+        return log.ts.date()
 
-    def generator_group_by_date() -> Iterator[tuple[datetime, list[LogRecord]]]:
-        for ts, group in groupby(logs, key=log_datetime):
+    def generator_group_by_date() -> Iterator[tuple[date, list[LogRecord]]]:
+        for ts, group in groupby(logs, key=log_date):
             group = list(group)
             yield ts, group
 

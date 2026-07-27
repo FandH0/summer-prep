@@ -253,31 +253,31 @@ def test_group_by_date_illegal_iter():
 
 def test_group_by_date_sorted_logs():
     logs = [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:35"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:37"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:37"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:38"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:38"), "", "", ""),]
-    answer = [(datetime.fromisoformat("1234-12-01T23:12:34"), logs[:1]),
-              (datetime.fromisoformat("1234-12-01T23:12:35"), logs[1:2]),
-              (datetime.fromisoformat("1234-12-01T23:12:37"), logs[2:4]),
-              (datetime.fromisoformat("1234-12-01T23:12:38"), logs[4:]),]
+            A9.LogRecord(datetime.fromisoformat("1234-12-02T23:12:35"), "", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-03T23:12:37"), "", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-03T23:12:37"), "", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-04T23:12:38"), "", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-04T23:12:38"), "", "", ""),]
+    answer = [(datetime.fromisoformat("1234-12-01T23:12:34").date(), logs[:1]),
+              (datetime.fromisoformat("1234-12-02T23:12:35").date(), logs[1:2]),
+              (datetime.fromisoformat("1234-12-03T23:12:37").date(), logs[2:4]),
+              (datetime.fromisoformat("1234-12-04T23:12:38").date(), logs[4:]),]
     assert list(A9.group_by_date(logs)) == answer
 
 
 def test_group_by_date_unsorted_logs():
     logs = [A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:34"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:35"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:37"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:38"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:38"), "", "", ""),
-            A9.LogRecord(datetime.fromisoformat("1234-12-01T23:12:37"), "", "", ""),]
-    answer = [(datetime.fromisoformat("1234-12-01T23:12:34"), logs[:1]),
-              (datetime.fromisoformat("1234-12-01T23:12:35"), logs[1:2]),
-              (datetime.fromisoformat("1234-12-01T23:12:37"), logs[2:3]),
-              (datetime.fromisoformat("1234-12-01T23:12:38"), logs[3:5]),
-              (datetime.fromisoformat("1234-12-01T23:12:37"), logs[5:]),]
-    # разделение 1234-12-01T23:12:37 на две группы
+            A9.LogRecord(datetime.fromisoformat("1234-12-02T23:12:35"), "", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-03T23:12:37"), "", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-04T23:12:38"), "", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-04T23:12:38"), "", "", ""),
+            A9.LogRecord(datetime.fromisoformat("1234-12-03T23:12:37"), "", "", ""),]
+    answer = [(datetime.fromisoformat("1234-12-01T23:12:34").date(), logs[:1]),
+              (datetime.fromisoformat("1234-12-02T23:12:35").date(), logs[1:2]),
+              (datetime.fromisoformat("1234-12-03T23:12:37").date(), logs[2:3]),
+              (datetime.fromisoformat("1234-12-04T23:12:38").date(), logs[3:5]),
+              (datetime.fromisoformat("1234-12-03T23:12:37").date(), logs[5:]),]
+    # разделение 1234-12-03T23:12:37 на две группы
     assert list(A9.group_by_date(logs)) == answer
 
 
