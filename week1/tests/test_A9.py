@@ -224,14 +224,12 @@ def test_top_modules_negative_n():
         A9.top_modules([], -10)
 
 
-@mark.parametrize("n", (True, "string", [], None))
+@mark.parametrize("n", (True, "string", [1, 2, 3], None))
 def test_top_modules_wrong_type_args(n):
     with raises(TypeError):
-        A9.top_modules(1, 1)
+        A9.top_modules(n, 1)
     with raises(TypeError):
-        A9.top_modules([1, 2, 3], 1)
-    with raises(TypeError):
-        A9.top_modules([], None)
+        A9.top_modules([], n)
 
 
 def test_top_modules_alphabet_check():
