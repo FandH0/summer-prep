@@ -142,9 +142,10 @@ def top_modules(logs: Iterable[LogRecord], n: int) -> list[tuple[str, int]]:
                 raise TypeError(f"logs iterable should have only LogRecord type: {type(log)}")
             yield log.module
 
-    log_counter = Counter(log_module())
     # сортировка по количеству упоминаний, затем по букве названия
-    return sorted(log_counter.most_common(), key=lambda x: (-x[1], x[0]))[:n]
+    # most_common не дает реализовать решение конфликта при одинаковых частотах
+    # поэтому сортируем сами
+    return sorted(Counter(log_module()).items(), key=lambda x: (-x[1], x[0]))[:n]
 
 
 def group_by_date(logs: Iterable[LogRecord]) -> Iterator[tuple[date, list[LogRecord]]]:
