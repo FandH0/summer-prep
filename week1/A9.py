@@ -1,5 +1,6 @@
 from collections.abc import Callable, Iterable, Iterator
 from pathlib import Path
+from codecs import lookup
 from dataclasses import dataclass
 from datetime import datetime
 LEVELS = {'DEBUG': 0, 'INFO': 1, 'WARNING': 2, 'ERROR': 3, 'CRITICAL': 4}
@@ -47,8 +48,14 @@ def parse(lines: Iterable[str], logger=print) -> Iterator[LogRecord]:
 
 
 def read_lines(path: str | Path, encoding: str = "utf-8") -> Iterator[str]:
-    with open(path, encoding=encoding):  # проверка на существование файла и кодировки при инициализации
-        pass
+    # проверка на существование файла и кодировки при инициализации
+    if not isinstance(path, Path):
+        path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"No such file or directory: {str(path)}")
+    if path.is_dir():
+        raise IsADirectoryError(f"Cannot open a directory: {str(path)}")
+    lookup(encoding)
 
     def generator_read_lines():
         with open(path, encoding=encoding) as f:

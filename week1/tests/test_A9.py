@@ -68,10 +68,14 @@ def test_read_lines_ending_symbol(tmp_path, text, answer):
 
 
 def test_read_lines_init_check(tmp_path):
-    f = tmp_path / "file"
-    f.touch()
     with raises(FileNotFoundError):
         _ = A9.read_lines("file_dont_exist")
+    f = tmp_path / "dir"
+    f.mkdir()
+    with raises(IsADirectoryError):
+        _ = A9.read_lines(f)
+    f = tmp_path / "file"
+    f.touch()
     with raises(LookupError):
         _ = A9.read_lines(f, encoding="encoding_dont_exist")
 
