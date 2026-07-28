@@ -131,26 +131,26 @@ class LRUCacheNaive:
 
         self.capacity = capacity
         self.cache = dict()
-        self.order = []
+        self._order = []
 
     def get(self, key: Hashable) -> Any:
         if key in self.cache:
-            self.order.remove(key)
-            self.order.insert(0, key)
+            self._order.remove(key)
+            self._order.insert(0, key)
             return self.cache[key]
         raise KeyError(f"Key not found: {key}")
 
     def put(self, key: Hashable, value: Any) -> None:
         if key not in self.cache:
-            self.order.insert(0, key)
+            self._order.insert(0, key)
             self.cache[key] = value
-            if len(self.order) > self.capacity:
-                last_key = self.order[-1]
-                self.order.remove(last_key)
+            if len(self._order) > self.capacity:
+                last_key = self._order[-1]
+                self._order.remove(last_key)
                 del self.cache[last_key]
         else:
-            self.order.remove(key)
-            self.order.insert(0, key)
+            self._order.remove(key)
+            self._order.insert(0, key)
             self.cache[key] = value
 
     def __len__(self):
@@ -160,4 +160,4 @@ class LRUCacheNaive:
         return key in self.cache
 
     def keys_in_lru_order(self) -> list[Hashable]:
-        return self.order
+        return self._order[:]
