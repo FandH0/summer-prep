@@ -36,7 +36,7 @@ class LRUCacheLinked(LinkedList):
     def __init__(self, capacity: int) -> None:
         # РЕШЕНИЕ: bool не принимается как подкласс int
         if not isinstance(capacity, int) or isinstance(capacity, bool):
-            raise TypeError(f"Capacity should be an interger: {type(capacity)}")
+            raise TypeError(f"Capacity should be an integer: {type(capacity)}")
         if capacity < 1:
             raise ValueError(f"Capacity should be greater than zero: {capacity}")
 
@@ -64,16 +64,17 @@ class LRUCacheLinked(LinkedList):
                 last = self._get_last()
                 self._remove(last)
                 del self.cache[last.key]
-                del last
                 self._length -= 1
+
+            node = Node(key, value)
+            self._add_front(node)
+            self.cache[key] = node
         else:
+            self.cache[key].val = value
             self._remove(self.cache[key])
+            self._add_front(self.cache[key])
 
-        node = Node(key, value)
-        self._add_front(node)
-        self.cache[key] = node
-
-    def __len__(self) -> int:
+    def __len__(self):
         return self._length
 
     def __contains__(self, key):
@@ -82,7 +83,7 @@ class LRUCacheLinked(LinkedList):
     def keys_in_lru_order(self):
         current = self._start.next
         keys = []
-        while current != self._end:
+        while current is not self._end:
             keys.append(current.key)
             current = current.next
         return keys

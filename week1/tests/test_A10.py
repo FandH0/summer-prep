@@ -78,3 +78,10 @@ def test_lrucache_linked_put_lru_order(lrucache_linked, key, value):
     assert lrucache_linked.keys_in_lru_order()[0] == key
     lrucache_linked.put("PLACEHOLDER", "PLACEHOLDER")
     assert lrucache_linked.keys_in_lru_order()[0] != key
+
+
+def test_lrucache_linked_reuse_nodes(lrucache_linked):
+    old_id = id(lrucache_linked.cache[-1000])
+    lrucache_linked.put(-1000, "new")
+    new_id = id(lrucache_linked.cache[-1000])
+    assert old_id == new_id
