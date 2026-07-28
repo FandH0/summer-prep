@@ -108,8 +108,8 @@ class LRUCacheLinked(LRUCache):
 
 
 class LRUCacheOrdered(LRUCache):
-    """Начало OrderedDict для добавления, обновления или обращения элементов,
-    удаление излишних элементов с конца"""
+    # начальные позиции OrderedDict для добавления, обновления или обращения элементов,
+    # удаление излишних элементов с конца
     def __init__(self, capacity: int):
         super().__init__(capacity)
         self.cache = OrderedDict()
