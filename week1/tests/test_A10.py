@@ -2,7 +2,7 @@ import A10
 from pytest import mark, raises, fixture
 
 
-@fixture(params=(A10.LRUCacheLinked, A10.LRUCacheOrdered))
+@fixture(params=(A10.LRUCacheLinked, A10.LRUCacheOrdered, A10.LRUCacheNaive))
 def lrucache(request):
     """lru cache с одним свободным местом"""
     capacity = 14
@@ -16,7 +16,7 @@ def lrucache(request):
     return lru_cache
 
 
-@mark.parametrize("LRU_CACHE", (A10.LRUCacheLinked, A10.LRUCacheOrdered))
+@mark.parametrize("LRU_CACHE", (A10.LRUCacheLinked, A10.LRUCacheOrdered, A10.LRUCacheNaive))
 @mark.parametrize("length", (0, 1, 5, 10, 100))
 def test_lrucache_length(length, LRU_CACHE):
     lru_cache = LRU_CACHE(capacity=10)
@@ -27,23 +27,23 @@ def test_lrucache_length(length, LRU_CACHE):
     assert len(lru_cache) == min(length, 10)
 
 
-def test_lrucache_contains(lrucache):
-    assert '2' in lrucache
-    assert lrucache.keys_in_lru_order()[0] != '2'
-
-
-@mark.parametrize("LRU_CACHE", (A10.LRUCacheLinked, A10.LRUCacheOrdered))
+@mark.parametrize("LRU_CACHE", (A10.LRUCacheLinked, A10.LRUCacheOrdered, A10.LRUCacheNaive))
 @mark.parametrize("capacity", (None, [], "str", True, 1.5))
 def test_lrucache_capacity_wrong_type(capacity, LRU_CACHE):
     with raises(TypeError):
         LRU_CACHE(capacity=capacity)
 
 
-@mark.parametrize("LRU_CACHE", (A10.LRUCacheLinked, A10.LRUCacheOrdered))
+@mark.parametrize("LRU_CACHE", (A10.LRUCacheLinked, A10.LRUCacheOrdered, A10.LRUCacheNaive))
 @mark.parametrize("capacity", (-1, 0))
 def test_lrucache_capacity_non_positive(capacity, LRU_CACHE):
     with raises(ValueError):
         LRU_CACHE(capacity=capacity)
+
+
+def test_lrucache_contains(lrucache):
+    assert '2' in lrucache
+    assert lrucache.keys_in_lru_order()[0] != '2'
 
 
 def test_lrucache_get_not_existing(lrucache):

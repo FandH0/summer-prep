@@ -89,7 +89,8 @@ class LRUCacheLinked:
 
 
 class LRUCacheOrdered:
-    """Начало OrderedDict для удаления излишних элементов, конец для добавления, обращения"""
+    """Начало OrderedDict для добавления, обновления или обращения элементов,
+    удаление излишних элементов с конца"""
     def __init__(self, capacity: int):
         # РЕШЕНИЕ: bool не принимается как подкласс int
         if not isinstance(capacity, int) or isinstance(capacity, bool):
@@ -101,14 +102,14 @@ class LRUCacheOrdered:
         self.cache = OrderedDict()
 
     def get(self, key: Hashable) -> Any:
-        self.cache.move_to_end(key, last=True)
+        self.cache.move_to_end(key, last=False)
         return self.cache[key]
 
     def put(self, key: Hashable, value: Any) -> None:
         self.cache[key] = value
-        self.cache.move_to_end(key, last=True)
+        self.cache.move_to_end(key, last=False)
         if len(self.cache) > self.capacity:
-            self.cache.popitem(last=False)
+            self.cache.popitem(last=True)
 
     def __len__(self):
         return len(self.cache)
@@ -117,5 +118,46 @@ class LRUCacheOrdered:
         return key in self.cache
 
     def keys_in_lru_order(self) -> list[Hashable]:
-        # список развернут для совместимости с LRUCacheLinked (последний элемент выходит)
-        return list(self.cache.keys())[::-1]
+        return list(self.cache.keys())
+
+
+class LRUCacheNaive:
+    def __init__(self, capacity: int):
+        # РЕШЕНИЕ: bool не принимается как подкласс int
+        if not isinstance(capacity, int) or isinstance(capacity, bool):
+            raise TypeError(f"Capacity should be an integer: {type(capacity)}")
+        if capacity < 1:
+            raise ValueError(f"Capacity should be greater than zero: {capacity}")
+
+        self.capacity = capacity
+        self.cache = dict()
+        self.order = []
+
+    def get(self, key: Hashable) -> Any:
+        if key in self.cache:
+            self.order.remove(key)
+            self.order.insert(0, key)
+            return self.cache[key]
+        raise KeyError(f"Key not found: {key}")
+
+    def put(self, key: Hashable, value: Any) -> None:
+        if key not in self.cache:
+            self.order.insert(0, key)
+            self.cache[key] = value
+            if len(self.order) > self.capacity:
+                last_key = self.order[-1]
+                self.order.remove(last_key)
+                del self.cache[last_key]
+        else:
+            self.order.remove(key)
+            self.order.insert(0, key)
+            self.cache[key] = value
+
+    def __len__(self):
+        return len(self.cache)
+
+    def __contains__(self, key: Hashable):
+        return key in self.cache
+
+    def keys_in_lru_order(self) -> list[Hashable]:
+        return self.order
