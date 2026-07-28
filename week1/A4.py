@@ -19,7 +19,7 @@ def word_counter(text: str) -> dict[str, int]:
 
 
 # defaultdict
-def word_default(text: str) -> dict[str: int]:
+def word_default(text: str) -> dict[str, int]:
     text = normalize(text)  # type(text) = list
     count = defaultdict(int)
     for word in text:
