@@ -47,15 +47,14 @@ class LRUCacheLinked:
         self._list = LinkedList()
 
     def get(self, key: Hashable) -> Any:
-        # исключения вызваны самим словарем
-        node = self.cache[key]
-
-        # lru реализация
-        # remove вызван первым, так как иначе будут потеряны ссылки на объекты рядом с ним
-        self._list.remove(node)
-        self._list.push_front(node)
-
-        return node.val
+        if key in self.cache:
+            node = self.cache[key]
+            # lru реализация
+            # remove вызван первым, так как иначе будут потеряны ссылки на объекты рядом с ним
+            self._list.remove(node)
+            self._list.push_front(node)
+            return node.val
+        raise KeyError(f"Key not found: {key}")
 
     def put(self, key: Hashable, value: Any) -> None:
         if key not in self:
@@ -102,8 +101,10 @@ class LRUCacheOrdered:
         self.cache = OrderedDict()
 
     def get(self, key: Hashable) -> Any:
-        self.cache.move_to_end(key, last=False)
-        return self.cache[key]
+        if key in self.cache:
+            self.cache.move_to_end(key, last=False)
+            return self.cache[key]
+        raise KeyError(f"Key not fount: {key}")
 
     def put(self, key: Hashable, value: Any) -> None:
         self.cache[key] = value
