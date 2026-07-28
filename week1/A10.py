@@ -1,6 +1,6 @@
 from collections.abc import Hashable
 from collections import OrderedDict
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Any
 
 
@@ -13,20 +13,25 @@ class LRUCache(ABC):
             raise ValueError(f"Capacity should be greater than zero: {capacity}")
         self.capacity = capacity
 
+    @abstractmethod
     def get(self, key: Hashable) -> Any:
-        pass
+        ...
 
+    @abstractmethod
     def put(self, key: Hashable, value: Any) -> None:
-        pass
+        ...
 
+    @abstractmethod
     def __len__(self):
-        pass
+        ...
 
+    @abstractmethod
     def __contains__(self, key: Hashable):
-        pass
+        ...
 
+    @abstractmethod
     def keys_in_lru_order(self) -> list[Hashable]:
-        pass
+        ...
 
 
 class Node:
@@ -118,7 +123,7 @@ class LRUCacheOrdered(LRUCache):
         if key in self.cache:
             self.cache.move_to_end(key, last=False)
             return self.cache[key]
-        raise KeyError(f"Key not fount: {key}")
+        raise KeyError(f"Key not found: {key}")
 
     def put(self, key: Hashable, value: Any) -> None:
         self.cache[key] = value

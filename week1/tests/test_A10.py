@@ -134,3 +134,13 @@ def test_lrucache_linked_put_reuse_nodes():
     lrucache_linked.put(-1000, "new")
     new_id = id(lrucache_linked.cache[-1000])
     assert old_id == new_id
+
+
+def test_lrucache_abstract_class():
+    with raises(TypeError):  # запрет на объект родительского класса
+        A10.LRUCache(10)
+    with raises(TypeError):  # запрет на подклассы без реализации
+        class A(A10.LRUCache):
+            def __init__(self):
+                pass
+        A()
