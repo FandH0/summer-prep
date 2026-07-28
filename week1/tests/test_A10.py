@@ -44,8 +44,10 @@ def test_lrucache_linked_capacity_non_positive(capacity):
 
 
 def test_lrucache_linked_get_not_existing(lrucache_linked):
+    old_lru_order = lrucache_linked.keys_in_lru_order()
     with raises(KeyError):
         lrucache_linked.get("new")
+    assert old_lru_order == lrucache_linked.keys_in_lru_order()
 
 
 @mark.parametrize("key, value", [('123', None), (None, [1, 2, 3]), (-1000, 1), ('2', 1),])
@@ -65,9 +67,10 @@ def test_lrucache_linked_put_capacity(lrucache_linked):
 
 def test_lrucache_linked_put_existing(lrucache_linked):
     length = len(lrucache_linked)
-    lrucache_linked.put('123', None)  # существующее значение
+    lrucache_linked.put('123', "new")  # существующее значение
     assert len(lrucache_linked) == length
     assert lrucache_linked.keys_in_lru_order().count('123') == 1
+    assert lrucache_linked.get('123') == "new"
 
 
 @mark.parametrize("key, value", [('123', None), (None, [1, 2, 3]), (None, None), ("new", 1),])
@@ -80,7 +83,7 @@ def test_lrucache_linked_put_lru_order(lrucache_linked, key, value):
     assert lrucache_linked.keys_in_lru_order()[0] != key
 
 
-def test_lrucache_linked_reuse_nodes(lrucache_linked):
+def test_lrucache_linked_put_reuse_nodes(lrucache_linked):
     old_id = id(lrucache_linked.cache[-1000])
     lrucache_linked.put(-1000, "new")
     new_id = id(lrucache_linked.cache[-1000])
