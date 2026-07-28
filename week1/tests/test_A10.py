@@ -40,7 +40,7 @@ def test_lrucache_leak(lru_class):
         lru_cache.put(key, step)
 
     assert len(lru_cache) == 10
-    assert len(lru_cache.keys_in_lru_order()) == len(lru_cache.cache)
+    assert set(lru_cache.keys_in_lru_order()) == set(lru_cache.cache)
 
 
 @fixture(params=CACHE_CLASSES)
