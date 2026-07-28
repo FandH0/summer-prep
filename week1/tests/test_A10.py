@@ -1,6 +1,46 @@
 import A10
 from pytest import mark, raises, fixture
+from random import seed, choice, randint
 CACHE_CLASSES = (A10.LRUCacheLinked, A10.LRUCacheOrdered, A10.LRUCacheNaive)
+
+
+def test_differential_against_model():
+    seed(100)
+    lru_cache = [c(10) for c in CACHE_CLASSES]
+    history = []
+
+    for step in range(10000):
+        key = randint(0, 20)
+        op = choice(["get", "put"])
+        history.append((op, key))
+
+        results = []
+        for c in lru_cache:
+            if op == "put":
+                c.put(key, step)
+                results.append(None)
+            else:
+                try:
+                    results.append(("ok", c.get(key)))
+                except KeyError:
+                    results.append(("miss",))
+
+        orders = [c.keys_in_lru_order() for c in lru_cache]
+        assert len(set(map(str, results))) == 1, f"расхождение на {step}: {history[-10:]}"
+        assert len(set(map(str, orders))) == 1, f"порядок разошёлся на {step}: {history[-10:]}"
+
+
+@mark.parametrize("lru_class", CACHE_CLASSES)
+def test_lrucache_leak(lru_class):
+    seed(100)
+    lru_cache = lru_class(10)
+
+    for step in range(10000):
+        key = randint(0, 20)
+        lru_cache.put(key, step)
+
+    assert len(lru_cache) == 10
+    assert len(lru_cache.keys_in_lru_order()) == len(lru_cache.cache)
 
 
 @fixture(params=CACHE_CLASSES)
