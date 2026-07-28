@@ -12,27 +12,28 @@ class Node:
 
 class LinkedList:
     def __init__(self):
-        self._start = Node(None, None)
-        self._end = Node(None, None)
-        self._start.next = self._end
-        self._end.prev = self._start
+        self.start = Node(None, None)
+        self.end = Node(None, None)
+        self.start.next = self.end
+        self.end.prev = self.start
 
     @staticmethod
-    def _remove(node: Node) -> None:
+    def remove(node: Node) -> None:
         node.prev.next = node.next
         node.next.prev = node.prev
 
-    def _add_front(self, node: Node) -> None:
-        node.next = self._start.next
-        node.prev = self._start
-        self._start.next.prev = node
-        self._start.next = node
+    def push_front(self, node: Node) -> None:
+        node.next = self.start.next
+        node.prev = self.start
+        self.start.next.prev = node
+        self.start.next = node
 
-    def _get_last(self) -> Node:
-        return self._end.prev
+    @property
+    def last(self) -> Node:
+        return self.end.prev
 
 
-class LRUCacheLinked(LinkedList):
+class LRUCacheLinked:
     def __init__(self, capacity: int) -> None:
         # РЕШЕНИЕ: bool не принимается как подкласс int
         if not isinstance(capacity, int) or isinstance(capacity, bool):
@@ -42,48 +43,45 @@ class LRUCacheLinked(LinkedList):
 
         self.capacity = capacity
         self.cache: dict[Hashable, Node] = dict()
-        self._length = 0
-        super().__init__()
+        self._list = LinkedList()
 
     def get(self, key: Hashable) -> Any:
         # исключения вызваны самим словарем
         node = self.cache[key]
 
         # lru реализация
-        # _remove вызван первым, так как иначе будут потеряны ссылки на объекты рядом с ним
-        self._remove(node)
-        self._add_front(node)
+        # remove вызван первым, так как иначе будут потеряны ссылки на объекты рядом с ним
+        self._list.remove(node)
+        self._list.push_front(node)
 
         return node.val
 
     def put(self, key: Hashable, value: Any) -> None:
         if key not in self:
-            self._length += 1
             # удаление элемента с конца
-            if self._length > self.capacity:
-                last = self._get_last()
-                self._remove(last)
+            if len(self) == self.capacity:
+                last = self._list.last
+                self._list.remove(last)
                 del self.cache[last.key]
-                self._length -= 1
 
             node = Node(key, value)
-            self._add_front(node)
+            self._list.push_front(node)
             self.cache[key] = node
         else:
             self.cache[key].val = value
-            self._remove(self.cache[key])
-            self._add_front(self.cache[key])
+            self._list.remove(self.cache[key])
+            self._list.push_front(self.cache[key])
 
     def __len__(self):
-        return self._length
+        return len(self.cache)
 
     def __contains__(self, key):
         return key in self.cache
 
-    def keys_in_lru_order(self):
-        current = self._start.next
+    def keys_in_lru_order(self) -> list[Hashable]:
+        current: Node = self._list.start.next
         keys = []
-        while current is not self._end:
+        while current is not self._list.end:
             keys.append(current.key)
             current = current.next
         return keys
