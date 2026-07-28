@@ -3,46 +3,49 @@
 # v1 + v2, v1 - v2, v * 3 (умножение на скаляр),
 # v1 == v2, abs(v) (длина), str(v) → "(x, y)"
 # v1 @ v2 скалярным произведением через __matmul__.
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
 class Vector:
-    def __init__(self, x1: float, x2: float):
-        self.x1 = x1
-        self.x2 = x2
+    x: float
+    y: float
 
     def __add__(self, v):
         if isinstance(v, Vector):
-            return Vector(self.x1 + v.x1, self.x2 + v.x2)
+            return Vector(self.x + v.x, self.y + v.y)
         return NotImplemented
 
     def __sub__(self, v):
         if isinstance(v, Vector):
-            return Vector(self.x1 - v.x1, self.x2 - v.x2)
+            return Vector(self.x - v.x, self.y - v.y)
         return NotImplemented
 
     def __mul__(self, v):
         if isinstance(v, (int, float)):
-            return Vector(v * self.x1, v * self.x2)
+            return Vector(v * self.x, v * self.y)
         return NotImplemented
 
     __rmul__ = __mul__
 
     def __eq__(self, v):
         if isinstance(v, Vector):
-            return self.x1 == v.x1 and self.x2 == v.x2
+            return self.x == v.x and self.y == v.y
         return NotImplemented
 
     def __hash__(self):
-        return hash((self.x1, self.x2))
+        return hash((self.x, self.y))
 
     def __abs__(self):
-        return (self.x1**2 + self.x2**2) ** 0.5
+        return (self.x ** 2 + self.y ** 2) ** 0.5
 
     def __str__(self):
-        return f'({self.x1}, {self.x2})'
+        return f'({self.x}, {self.y})'
 
     def __repr__(self):
-        return f'Vector({self.x1}, {self.x2})'
+        return f'Vector({self.x}, {self.y})'
 
     def __matmul__(self, v):
         if isinstance(v, Vector):
-            return self.x1 * v.x1 + self.x2 * v.x2
+            return self.x * v.x + self.y * v.y
         return NotImplemented
