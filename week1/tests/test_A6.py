@@ -63,3 +63,9 @@ def test_compare():
 def test_hashable():
     assert Money(1, "RUB") in {Money(1, "RUB"): None}
     assert len({Money(1, "RUB"), Money(1, "RUB")}) == 1
+
+
+@mark.parametrize("n", (0.1, -1.5, None, [1, 2, 3], True, "srting"))
+def test_mul_wrong_types(n):
+    with raises(TypeError):
+        Money(1, "RUB") * n

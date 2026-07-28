@@ -34,7 +34,7 @@ class Money:
         return Money(self.amount - other.amount, self.currency)
 
     def __mul__(self, other):
-        if not isinstance(other, int):
+        if not isinstance(other, int) or isinstance(other, bool):  # boolean не поддерживается как подкласс integer
             return NotImplemented
         return Money(self.amount * other, self.currency)
 
