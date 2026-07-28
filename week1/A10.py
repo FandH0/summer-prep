@@ -1,4 +1,5 @@
 from collections.abc import Hashable
+from collections import OrderedDict
 from typing import Any
 
 
@@ -34,7 +35,7 @@ class LinkedList:
 
 
 class LRUCacheLinked:
-    def __init__(self, capacity: int) -> None:
+    def __init__(self, capacity: int):
         # РЕШЕНИЕ: bool не принимается как подкласс int
         if not isinstance(capacity, int) or isinstance(capacity, bool):
             raise TypeError(f"Capacity should be an integer: {type(capacity)}")
@@ -85,3 +86,36 @@ class LRUCacheLinked:
             keys.append(current.key)
             current = current.next
         return keys
+
+
+class LRUCacheOrdered:
+    """Начало OrderedDict для удаления излишних элементов, конец для добавления, обращения"""
+    def __init__(self, capacity: int):
+        # РЕШЕНИЕ: bool не принимается как подкласс int
+        if not isinstance(capacity, int) or isinstance(capacity, bool):
+            raise TypeError(f"Capacity should be an integer: {type(capacity)}")
+        if capacity < 1:
+            raise ValueError(f"Capacity should be greater than zero: {capacity}")
+
+        self.capacity = capacity
+        self.cache = OrderedDict()
+
+    def get(self, key: Hashable) -> Any:
+        self.cache.move_to_end(key, last=True)
+        return self.cache[key]
+
+    def put(self, key: Hashable, value: Any) -> None:
+        self.cache[key] = value
+        self.cache.move_to_end(key, last=True)
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+
+    def __len__(self):
+        return len(self.cache)
+
+    def __contains__(self, key: Hashable):
+        return key in self.cache
+
+    def keys_in_lru_order(self) -> list[Hashable]:
+        # список развернут для совместимости с LRUCacheLinked (последний элемент выходит)
+        return list(self.cache.keys())[::-1]
