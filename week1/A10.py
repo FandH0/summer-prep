@@ -1,6 +1,32 @@
 from collections.abc import Hashable
 from collections import OrderedDict
+from abc import ABC
 from typing import Any
+
+
+class LRUCache(ABC):
+    def __init__(self, capacity: int):
+        # РЕШЕНИЕ: bool не принимается как подкласс int
+        if not isinstance(capacity, int) or isinstance(capacity, bool):
+            raise TypeError(f"Capacity should be an integer: {type(capacity)}")
+        if capacity < 1:
+            raise ValueError(f"Capacity should be greater than zero: {capacity}")
+        self.capacity = capacity
+
+    def get(self, key: Hashable) -> Any:
+        pass
+
+    def put(self, key: Hashable, value: Any) -> None:
+        pass
+
+    def __len__(self):
+        pass
+
+    def __contains__(self, key: Hashable):
+        pass
+
+    def keys_in_lru_order(self) -> list[Hashable]:
+        pass
 
 
 class Node:
@@ -34,15 +60,9 @@ class LinkedList:
         return self.end.prev
 
 
-class LRUCacheLinked:
+class LRUCacheLinked(LRUCache):
     def __init__(self, capacity: int):
-        # РЕШЕНИЕ: bool не принимается как подкласс int
-        if not isinstance(capacity, int) or isinstance(capacity, bool):
-            raise TypeError(f"Capacity should be an integer: {type(capacity)}")
-        if capacity < 1:
-            raise ValueError(f"Capacity should be greater than zero: {capacity}")
-
-        self.capacity = capacity
+        super().__init__(capacity)
         self.cache: dict[Hashable, Node] = dict()
         self._list = LinkedList()
 
@@ -75,7 +95,7 @@ class LRUCacheLinked:
     def __len__(self):
         return len(self.cache)
 
-    def __contains__(self, key):
+    def __contains__(self, key: Hashable):
         return key in self.cache
 
     def keys_in_lru_order(self) -> list[Hashable]:
@@ -87,17 +107,11 @@ class LRUCacheLinked:
         return keys
 
 
-class LRUCacheOrdered:
+class LRUCacheOrdered(LRUCache):
     """Начало OrderedDict для добавления, обновления или обращения элементов,
     удаление излишних элементов с конца"""
     def __init__(self, capacity: int):
-        # РЕШЕНИЕ: bool не принимается как подкласс int
-        if not isinstance(capacity, int) or isinstance(capacity, bool):
-            raise TypeError(f"Capacity should be an integer: {type(capacity)}")
-        if capacity < 1:
-            raise ValueError(f"Capacity should be greater than zero: {capacity}")
-
-        self.capacity = capacity
+        super().__init__(capacity)
         self.cache = OrderedDict()
 
     def get(self, key: Hashable) -> Any:
@@ -122,15 +136,9 @@ class LRUCacheOrdered:
         return list(self.cache.keys())
 
 
-class LRUCacheNaive:
+class LRUCacheNaive(LRUCache):
     def __init__(self, capacity: int):
-        # РЕШЕНИЕ: bool не принимается как подкласс int
-        if not isinstance(capacity, int) or isinstance(capacity, bool):
-            raise TypeError(f"Capacity should be an integer: {type(capacity)}")
-        if capacity < 1:
-            raise ValueError(f"Capacity should be greater than zero: {capacity}")
-
-        self.capacity = capacity
+        super().__init__(capacity)
         self.cache = dict()
         self._order = []
 
