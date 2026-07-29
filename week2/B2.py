@@ -3,21 +3,11 @@ import sys
 _, *words = sys.stdin.read().split()
 
 
-def count_chars(s):
+def count_chars(word):
     counter = [0] * 26
-    for i in s:
-        counter[ord(i) - 97] += 1
+    for ch in word:
+        counter[ord(ch) - 97] += 1
     return tuple(counter)
 
 
-groups = set()
-answer = 0
-for word in words:
-    key = count_chars(word)
-    if key in groups:
-        pass
-    else:
-        answer += 1
-        groups.add(key)
-
-print(answer)
+print(len({count_chars(word) for word in words}))
