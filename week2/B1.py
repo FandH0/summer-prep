@@ -1,14 +1,17 @@
 import sys
 
-n, s, *nums = map(int, sys.stdin.read().split())
-passed_nums = dict()
+_, s, *nums = map(int, sys.stdin.read().split())
+passed_nums = {}
 answer = None
-for i in range(len(nums)):
-    if s - nums[i] in passed_nums:
-        answer = (passed_nums[s-nums[i]], i)
-    passed_nums[nums[i]] = i
 
-if answer:
+for i, num in enumerate(nums):
+    need = s - num
+    if need in passed_nums:
+        answer = (passed_nums[need], i)
+        break
+    passed_nums[num] = i
+
+if answer is not None:
     print(*answer)
 else:
     print(-1)
