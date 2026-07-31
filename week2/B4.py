@@ -21,4 +21,4 @@ while mid <= right:
     else:
         mid += 1
 
-print(nums)
+print(*nums)
