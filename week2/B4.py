@@ -3,11 +3,6 @@ import sys
 
 n, *nums = map(int, sys.stdin.read().split())
 left, right = 0, n - 1
-
-while left < n and nums[left] == 0:
-    left += 1
-while right > 0 and nums[right] == 2:
-    right -= 1
 mid = left
 
 while mid <= right:
