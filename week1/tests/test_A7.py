@@ -70,7 +70,7 @@ def test_retry_delay_amount(monkeypatch, times):
         counts += 1
 
     monkeypatch.setattr("A7.sleep", mock_sleep)
-    with raises(Exception):
+    with raises(ConnectionError):
         counter()
 
     assert counter() is None
