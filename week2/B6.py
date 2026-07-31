@@ -1,15 +1,15 @@
 import sys
 
-s = sys.stdin.read()
+s = sys.stdin.read().rstrip('\n')
 
 pairs = {")": "(", "]" :"[", "}": "{"}
 opened_brackets = []
 
 for bracket in s:
-    if bracket in ("(", "[", "{"):
+    if bracket not in pairs:
         opened_brackets.append(bracket)
-    elif len(opened_brackets) != 0 and opened_brackets[-1] == pairs[bracket]:
-        del opened_brackets[-1]
+    elif opened_brackets and opened_brackets[-1] == pairs[bracket]:
+        opened_brackets.pop()
     else:
         print("NO")
         break
