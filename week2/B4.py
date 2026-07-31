@@ -2,21 +2,23 @@ import sys
 
 
 n, *nums = map(int, sys.stdin.read().split())
-left, mid, right = 0, 1, 2
+left, right = 0, n - 1
 
+while left < n and nums[left] == 0:
+    left += 1
+while right > 0 and nums[right] == 2:
+    right -= 1
+mid = left
 
-while right < n:
-    while nums[left] == 0 and left < n - 1:
+while mid <= right:
+    if nums[mid] == 0:
+        nums[mid], nums[left] = nums[left], nums[mid]
         left += 1
-    mid = max(mid, left)
-    while nums[mid] == 1 and mid < n - 1:
         mid += 1
-    right = max(right, mid)
-    if nums[left] > nums[right]:
-        nums[left], nums[right] = nums[right], nums[left]
-    if nums[left] > nums[mid]:
-        nums[left], nums[mid] = nums[mid], nums[left]
-    if nums[mid] > nums[right]:
+    elif nums[mid] == 2:
         nums[mid], nums[right] = nums[right], nums[mid]
-    right += 1
-print(*nums)
+        right -= 1
+    else:
+        mid += 1
+
+print(nums)
