@@ -35,8 +35,40 @@ def bisect_right(goal):
     return -1
 
 
+def bisect_left_alt(goal):
+    left, right = 1, n + 1
+    ans = -1
+    while left != right:
+        mid = (left + right) // 2
+        mid_num = data[mid]
+        if mid_num > goal:
+            right = mid
+        elif mid_num < goal:
+            left = mid + 1
+        else:
+            right = mid
+            ans = mid - 1
+    return ans
+
+
+def bisect_right_alt(goal):
+    left, right = 1, n + 1
+    ans = -1
+    while left != right:
+        mid = (left + right) // 2
+        mid_num = data[mid]
+        if mid_num > goal:
+            right = mid
+        elif mid_num < goal:
+            left = mid + 1
+        else:
+            left = mid + 1
+            ans = mid - 1
+    return ans
+
+
 for i in range(n + 2, n + q + 2):
     goal = data[i]
-    answers.append((bisect_left(goal), bisect_right(goal)))
+    answers.append((bisect_left_alt(goal), bisect_right_alt(goal)))
 
 sys.stdout.write("\n".join(f"{i[0]} {i[1]}" for i in answers))
