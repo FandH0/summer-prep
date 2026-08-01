@@ -7,7 +7,8 @@ q = data[n + 1]
 answers = []
 
 
-def bisect_left(goal):
+# alt реализации с заглядыванием в соседний элемент и ранним выходом
+def bisect_left_alt(goal):
     left, right = 1, n + 1
     while left != right:
         mid = (left + right) // 2
@@ -21,7 +22,7 @@ def bisect_left(goal):
     return -1
 
 
-def bisect_right(goal):
+def bisect_right_alt(goal):
     left, right = 1, n + 1
     while left != right:
         mid = (left + right) // 2
@@ -35,7 +36,8 @@ def bisect_right(goal):
     return -1
 
 
-def bisect_left_alt(goal):
+# основные реализации через сохранение промежуточного ответа
+def bisect_left(goal):
     left, right = 1, n + 1
     ans = -1
     while left != right:
@@ -51,7 +53,7 @@ def bisect_left_alt(goal):
     return ans
 
 
-def bisect_right_alt(goal):
+def bisect_right(goal):
     left, right = 1, n + 1
     ans = -1
     while left != right:
@@ -69,6 +71,6 @@ def bisect_right_alt(goal):
 
 for i in range(n + 2, n + q + 2):
     goal = data[i]
-    answers.append((bisect_left_alt(goal), bisect_right_alt(goal)))
+    answers.append((bisect_left(goal), bisect_right(goal)))
 
 sys.stdout.write("\n".join(f"{i[0]} {i[1]}" for i in answers))
