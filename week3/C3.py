@@ -21,4 +21,4 @@ while left != right:
         left = mid + 1
     else:
         right = mid
-print(answer)
+sys.stdout.write(str(answer))
