@@ -8,19 +8,21 @@ import sys
 переноса стека следующие |stack_out| операций удаления занимают O(1) и каждое удаление в среднем занимает 3 операции: 
 операцию удаления из входящего стека, операцию добавления в выходящий стек и операцию удаления из выходящего стека.
 """
-_, *ops = sys.stdin.read().split('\n')
+_, *ops = sys.stdin.read().split()
+i, len_ops = 0, len(ops)
 stack_in = []
 stack_out = []
 answer = []
 
-for op in ops:
-    op = op.split()
-    if op[0] == "push":
-        stack_in.append(op[1])
+while i < len_ops:
+    if ops[i] == "push":
+        i += 1
+        stack_in.append(ops[i])
     else:
         if not stack_out:
             while stack_in:
                 stack_out.append(stack_in.pop())
         answer.append(stack_out.pop())
+    i += 1
 
-print(*answer, sep='\n')
+sys.stdout.write('\n'.join(answer))
