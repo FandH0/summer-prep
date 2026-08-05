@@ -7,20 +7,22 @@ cur_min содержит информацию о данном минимуме, 
 до добавления этого элемента. Таким образом при появлении нового минимума, он в паре к себе запоминает прошлый минимум,
 к которому мы получим доступ при его удалении, и обновляет cur_min.
 """
-_, *ops = sys.stdin.read().split("\n")
+_, *ops = sys.stdin.read().split()
+i, len_ops = 0, len(ops)
 stack = []  # числа хранятся в виде: (число, минимальный элемент в стеке лежащий до данного числа)
 cur_min = float("inf")
 answer = []
 
-for op in ops:
-    op = op.split()
-    if op[0] == "push":
-        num = int(op[1])
+while i < len_ops:
+    if ops[i] == "push":
+        i += 1
+        num = int(ops[i])
         stack.append((num, cur_min))
         cur_min = min(num, cur_min)
-    elif op[0] == "min":
+    elif ops[i] == "min":
         answer.append(cur_min)
     else:
         cur_min = stack.pop()[1]
+    i += 1
 
 print(*answer, sep='\n')
