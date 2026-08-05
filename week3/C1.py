@@ -1,7 +1,6 @@
 import sys
 
 
-# перевод в int по мере требования
 data = list(map(int, sys.stdin.read().split()))
 n = data[0]
 q = data[n + 1]
