@@ -7,15 +7,19 @@ inverse_count = 0
 
 def merge(left, right):
     merged = []
-    while left and right:
-        if left[0] <= right[0]:
-            merged.append(left.pop(0))
+    li, ri = 0, 0
+    len_left, len_right = len(left), len(right)
+    while li < len_left and ri < len_right:
+        if left[li] <= right[ri]:
+            merged.append(left[li])
+            li += 1
         else:
-            merged.append(right.pop(0))
+            merged.append(right[ri])
+            ri += 1
             global inverse_count
-            inverse_count += len(left)
+            inverse_count += len_left - li
 
-    merged.extend(left or right)
+    merged.extend(left[li:] or right[ri:])
     return merged
 
 
