@@ -6,6 +6,7 @@ inverse_count = 0
 
 
 def merge(left, right):
+    global inverse_count
     merged = []
     li, ri = 0, 0
     len_left, len_right = len(left), len(right)
@@ -16,7 +17,6 @@ def merge(left, right):
         else:
             merged.append(right[ri])
             ri += 1
-            global inverse_count
             inverse_count += len_left - li
 
     merged.extend(left[li:] or right[ri:])
