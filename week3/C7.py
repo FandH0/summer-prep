@@ -28,5 +28,4 @@ def merge_sort(array):
 
 
 answer = merge_sort(nums)
-print(inverse_count)
-print(*answer)
+sys.stdout.writelines([str(inverse_count) + '\n', " ".join(map(str, answer))])
