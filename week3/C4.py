@@ -1,5 +1,4 @@
 import sys
-from itertools import batched
 
 
 """
@@ -11,7 +10,10 @@ from itertools import batched
 Аналогичным является решение по сортировке времени окончания при построении графика с начала.
 """
 n = int(sys.stdin.readline().rstrip())
-meetings = list(batched(map(int, sys.stdin.read().split()), 2))
+data = map(int, sys.stdin.read().split())
+meetings = []
+for _ in range(n):
+    meetings.append((next(data), next(data)))
 meetings.sort(key=lambda x: x[0], reverse=True)
 
 
