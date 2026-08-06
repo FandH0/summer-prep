@@ -41,6 +41,7 @@ def reverse_iterative(l: LinkedList):
     l.end.next = None
 
 
+# рекурсивный подход работает только для малых n < ~1000, так как рекурсия вызывается внутрь для каждого элемента списка
 def reverse_recursive(l: LinkedList):
     pointer = l.end
     # reverse_node отправляется с начала списка до предыдущего pointer элементу и затем коллапсом рекурсии
