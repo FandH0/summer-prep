@@ -8,11 +8,11 @@ class Node:
 
 
 class LinkedList:
-    def __init__(self, values=[]):
+    def __init__(self, values=None):
         self.start = Node("start", None)
         self.end = Node("end", None)
         pointer = self.start
-        for value in values:
+        for value in values or []:
             new = Node(value, None)
             pointer.next = new
             pointer = new
