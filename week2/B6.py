@@ -2,7 +2,7 @@ import sys
 
 s = sys.stdin.read().rstrip('\n')
 
-pairs = {")": "(", "]" :"[", "}": "{"}
+pairs = {")": "(", "]": "[", "}": "{"}
 opened_brackets = []
 
 for bracket in s:

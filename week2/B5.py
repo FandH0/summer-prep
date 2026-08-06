@@ -11,4 +11,3 @@ for shift in range(k, n):
     max_sum = max(max_sum, window_sum)
 
 print(max_sum)
-
