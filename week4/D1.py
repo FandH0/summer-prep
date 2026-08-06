@@ -20,29 +20,48 @@ class LinkedList:
 
 
 n, *nums = sys.stdin.read().split()
-l = LinkedList(nums)
+li = LinkedList(nums)
 
 
-# разворот списка с сохранением sentinel
-l.end.next = l.start.next  # зацикливание списка
-# три указателя, меняем ссылку для среднего на pre
-pre = l.end
-cur = pre.next
-new = cur.next
-# после цикла не-sentinel объекты получат нужные ссылки на предыдущий элемент, а в pre останется ссылка на последний
-while cur is not l.end:
-    cur.next = pre
-    pre = cur
-    cur = new
-    new = new.next
-# поправка указателей sentinel
-l.start.next = pre
-l.end.next = None
+def reverse_iterative(l: LinkedList):
+    # разворот списка с сохранением sentinel
+    l.end.next = l.start.next  # зацикливание списка
+    # три указателя, меняем ссылку для среднего на pre
+    pre = l.end
+    cur = pre.next
+    new = cur.next
+    # после цикла не-sentinel объекты получат нужные ссылки на предыдущий элемент, а в pre останется ссылка на последний
+    while cur is not l.end:
+        cur.next = pre
+        pre = cur
+        cur = new
+        new = new.next
+    # поправка указателей sentinel
+    l.start.next = pre
+    l.end.next = None
 
+
+def reverse_recursive(l: LinkedList):
+    pointer = l.end
+    # reverse_node отправляется с начала списка до предыдущего pointer элементу и затем коллапсом рекурсии
+    # меняет попарно связи до самого начала списка (start.next будет все ещё отсылать на раннее первый элемент)
+    def reverse_node(pre: Node):
+        nonlocal pointer
+        if pre.next is not pointer:
+            reverse_node(pre.next)
+        pointer.next = pre
+        pointer = pre
+
+    reverse_node(l.start)
+    l.start, l.end = l.end, l.start
+    l.end.next = None  # обрезание списка с конца
+
+
+reverse_iterative(li)
 # вывод
 answer = []
-pointer = l.start.next
-while pointer is not l.end:
+pointer = li.start.next
+while pointer is not li.end:
     answer.append(pointer.value)
     pointer = pointer.next
 sys.stdout.write(" ".join(answer) + "\n")
