@@ -1,5 +1,4 @@
 import sys
-import time
 
 
 class Node:
@@ -34,21 +33,20 @@ class LinkedList:
         pointer.next = cycle_enter
 
 
-start = time.perf_counter()
-data = list(sys.stdin.read().split())
-nums, p = data[1:-1], int(data[-1])
+n, *nums = sys.stdin.read().split()
+p = int(nums.pop())
 linked_list = LinkedList(nums)
 answer = []
 
 # поиск среднего
-rabbit, tortoise = linked_list.start, linked_list.start
-while (tortoise.next or tortoise) is not linked_list.end:
-    rabbit = rabbit.next
-    tortoise = tortoise.next.next
+tortoise, rabbit = linked_list.start, linked_list.start
+while (rabbit.next or rabbit) is not linked_list.end:
+    tortoise = tortoise.next
+    rabbit = rabbit.next.next
 # прогоняем четный случай на "вторую середину"
-if tortoise is not linked_list.end:
-    rabbit = rabbit.next
-answer.append(rabbit.value)
+if rabbit is not linked_list.end:
+    tortoise = tortoise.next
+answer.append(tortoise.value)
 
 """
 Заяц и черепаха при цикле всегда встретятся до того, как черепаха пройдет до последнего элемента включительно, а
@@ -63,11 +61,12 @@ answer.append(rabbit.value)
 """
 # проверка на цикл
 linked_list.create_loop(p)
-rabbit, tortoise = linked_list.start, linked_list.start
-while (tortoise.next or tortoise) is not linked_list.end:
-    rabbit = rabbit.next
-    tortoise = tortoise.next.next
+tortoise, rabbit = linked_list.start, linked_list.start
+while (rabbit.next or rabbit) is not linked_list.end:
+    tortoise = tortoise.next
+    rabbit = rabbit.next.next
     if rabbit is tortoise:
+        print(rabbit.value)
         answer.append("YES")
         break
 else:
