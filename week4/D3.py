@@ -101,10 +101,7 @@ def by_depth_order(node, answer_buffer):
     queue = deque([node])
     while queue:
         current = queue.popleft()
-        if isinstance(current, int):
-            answer_buffer.append(current)
-            continue
-        queue.append(current.value)
+        answer_buffer.append(current.value)
         if current.left:
             queue.append(current.left)
         if current.right:
