@@ -57,16 +57,18 @@ def post_order(node, answer_buffer):
 
 def in_order_iterative(node, answer_buffer):
     stack = [node]
+    while stack[-1].left is not None:
+        stack.append(stack[-1].left)
+    # начинаем цикл с крайнего левого элемента
     while stack:
-        current = stack.pop()
-        if isinstance(current, int):
-            answer_buffer.append(current)
+        current = stack[-1]
+        answer_buffer.append(stack.pop().value)
+        # сдвиг вправо
+        if current.right is None:
             continue
-        if current.right:
-            stack.append(current.right)
-        stack.append(current.value)
-        if current.left:
-            stack.append(current.left)
+        stack.append(current.right)
+        while stack[-1].left is not None:
+            stack.append(stack[-1].left)
 
 
 def pre_order_iterative(node, answer_buffer):
