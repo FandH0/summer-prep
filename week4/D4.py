@@ -11,32 +11,27 @@ for _ in range(n):
 
 
 def in_order_is_bst():
-    stack = [0]
-    depth, cur_depth = 1, 1
+    stack = [(0, 1)]  # (node, current_depth)
+    depth = 0
     answer = "YES"
     last_in_order = -float("inf")
 
-    while left[stack[-1]] != -1:
-        cur_depth += 1
-        stack.append(left[stack[-1]])
+    while left[stack[-1][0]] != -1:
+        stack.append((left[stack[-1][0]], stack[-1][1] + 1))
 
     while stack:
         current = stack.pop()
-        if value[current] <= last_in_order:
+        if value[current[0]] <= last_in_order:
             answer = "NO"
-        last_in_order = value[current]
+        last_in_order = value[current[0]]
+        depth = max(depth, current[1])
 
-        depth = max(depth, cur_depth)
-        cur_depth -= 1
-        if right[current] == -1:
+        if right[current[0]] == -1:
             continue
-
         # сдвиг вправо
-        stack.append(right[current])
-        cur_depth += 2
-        while left[stack[-1]] != -1:
-            stack.append(left[stack[-1]])
-            cur_depth += 1
+        stack.append((right[current[0]], current[1] + 1))
+        while left[stack[-1][0]] != -1:
+            stack.append((left[stack[-1][0]], stack[-1][1] + 1))
 
     return answer, str(depth)
 
