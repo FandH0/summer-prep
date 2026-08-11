@@ -56,7 +56,9 @@ def dfs_island_iterative():
     return islands
 
 
+if n * m < sys.getrecursionlimit() - 1:
+    answer = dfs_islands_recursive()
+else:
+    answer = dfs_island_iterative()
 
-
-
-print(dfs_island_iterative())
+print(answer)
