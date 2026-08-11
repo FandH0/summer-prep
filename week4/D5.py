@@ -6,41 +6,57 @@ field = sys.stdin.read().split()
 
 
 def dfs_islands_recursive():
-    islands = {}  # id острова: True если самостоятельный иначе False
+    islands = 0
     visited = [[False] * m for _ in range(n)]
 
-    def pre_order_islands(y, x, current_island):
-        # посещение снова только при проверке самостоятельности острова сверху (то есть при спуске вниз)
-        if visited[y][x]:
-            if field[y][x] == '1' and current_island is not None:
-                islands[current_island] = False
-            return
-        if x == 0:
-            # обнуление острова при переходе на новый слой (что происходит при x == 0)
-            # для того чтобы избегать острова, которые сами на себя ссылаются при проверке самостоятельности
-            current_island = None
-        # создание острова если его нет
-        if field[y][x] == '1' and current_island is None:
-            current_island = len(islands)
-            islands[current_island] = True
-            if y + 1 < n and x == 0:
-                # требуем проверки на самостоятельность из-за того, что она не запускается на левом хребте
-                pre_order_islands(y + 1, x, current_island)
-        elif field[y][x] == '0':
-            current_island = None
+    def flood(y, x):
+        if field[y][x] == '1':
+            visited[y][x] = True
+            if 0 <= y + 1 < n and not visited[y + 1][x]:
+                flood(y + 1, x)
+            if 0 <= y - 1 < n and not visited[y - 1][x]:
+                flood(y - 1, x)
+            if 0 <= x + 1 < m and not visited[y][x + 1]:
+                flood(y, x + 1)
+            if 0 <= x - 1 < m and not visited[y][x - 1]:
+                flood(y, x - 1)
+
+    for y in range(n):
+        for x in range(m):
+            if not visited[y][x] and field[y][x] == '1':
+                flood(y, x)
+                islands += 1
+
+    return islands
+
+
+def dfs_island_iterative():
+    islands = 0
+    visited = [[False] * m for _ in range(n)]
+    stack = [(y, x, False) for y in range(n) for x in range(m)]
+
+    while stack:
+        y, x, flood = stack.pop()
+
+        if not flood and not visited[y][x] and field[y][x] == '1':
+            islands += 1
+            flood = True
+
+        if flood and field[y][x] == '1':
+            if 0 <= y + 1 < n and not visited[y + 1][x]:
+                stack.append((y + 1, x, True))
+            if 0 <= y - 1 < n and not visited[y - 1][x]:
+                stack.append((y - 1, x, True))
+            if 0 <= x + 1 < m and not visited[y][x + 1]:
+                stack.append((y, x + 1, True))
+            if 0 <= x - 1 < m and not visited[y][x - 1]:
+                stack.append((y, x - 1, True))
         visited[y][x] = True
 
-
-        if y + 1 < n:
-            # спуск вниз при левом хребте или проверке на самостоятельность
-            pre_order_islands(y + 1, x, current_island)
-        if x + 1 < m:
-            pre_order_islands(y, x + 1, current_island)
-
-    pre_order_islands(0, 0, None)
-
-    # считаем самостоятельные острова
-    return sum(islands.values())
+    return islands
 
 
-print(dfs_islands_recursive())
+
+
+
+print(dfs_island_iterative())
