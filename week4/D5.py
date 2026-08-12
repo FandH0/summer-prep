@@ -33,10 +33,16 @@ def dfs_islands_recursive():
 def dfs_island_iterative():
     islands = 0
     visited = [[False] * m for _ in range(n)]
-    stack = [(y, x, False) for y in range(n) for x in range(m)]
-
+    stack = [(0, 0, False)]
+    pointer_y, pointer_x = 0, 1
     while stack:
         y, x, flood = stack.pop()
+        if not stack and pointer_y < n:  # основной проход
+            while pointer_x < m:
+                stack.append((pointer_y, pointer_x, False))
+                pointer_x += 1
+            pointer_y += 1
+            pointer_x = 0
 
         if not flood and not visited[y][x] and field[y][x] == '1':
             islands += 1
@@ -44,12 +50,16 @@ def dfs_island_iterative():
 
         if flood and field[y][x] == '1':
             if 0 <= y + 1 < n and not visited[y + 1][x]:
+                visited[y + 1][x] = True
                 stack.append((y + 1, x, True))
             if 0 <= y - 1 < n and not visited[y - 1][x]:
+                visited[y - 1][x] = True
                 stack.append((y - 1, x, True))
             if 0 <= x + 1 < m and not visited[y][x + 1]:
+                visited[y][x + 1] = True
                 stack.append((y, x + 1, True))
             if 0 <= x - 1 < m and not visited[y][x - 1]:
+                visited[y][x - 1] = True
                 stack.append((y, x - 1, True))
         visited[y][x] = True
 
