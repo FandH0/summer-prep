@@ -7,7 +7,7 @@ data = sys.stdin.read().split()
 r1, c1, r2, c2 = map(int, data[-4:])
 # BFS
 queue = deque([(r1, c1, 0)])
-visited = [[False] * n for _ in range(m)]
+visited = [[False] * m for _ in range(n)]
 answer = -1
 while queue:
     y, x, length = queue.popleft()
