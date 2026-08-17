@@ -29,13 +29,12 @@ def get(x, y):
 
 n, q = map(int, sys.stdin.readline().split())
 requests = sys.stdin.read().split()
-parent = [x for x in range(n)]  # создание n множеств
+parent = [x for x in range(n + 1)]  # создание n множеств
 rang = [1 for x in range(n)]  # ранги для второй оптимизации
 
 answer = []
 for i in range(0, q):
     a, b = int(requests[3 * i + 1]), int(requests[3 * i + 2])
-    print(parent)
     if requests[3 * i] == 'get':
         answer.append(get(a, b))
     else:
