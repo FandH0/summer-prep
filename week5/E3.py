@@ -19,8 +19,8 @@ while i < q:
 
 prev = defaultdict(int)
 counts = 0
-for n in pref_sums:
-    counts += prev[n - s]
-    prev[n] += 1
+for pref in pref_sums:
+    counts += prev[pref - s]
+    prev[pref] += 1
 
 sys.stdout.write("\n".join(answer) + '\n' + str(counts))
