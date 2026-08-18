@@ -1,6 +1,9 @@
 import sys
+from heapq import heappush, heappop
 
 
+# Собственная реализация кучи с функцией ключом
+'''
 def key(j):
     return num_arrays[j][-1]
 
@@ -28,7 +31,7 @@ def min_child(heap, i):
 def sift_first_down(heap):
     i = 0
     c = min_child(heap, i)
-    while i < len(heap) and key(heap[i]) > key(heap[c]):
+    while key(heap[i]) > key(heap[c]):
         heap[i], heap[c] = heap[c], heap[i]
         i = c
         c = min_child(heap, i)
@@ -41,7 +44,7 @@ def sift_last_up(heap):
         heap[i], heap[p] = heap[p], heap[i]
         i = p
         p = (i - 1) // 2
-
+'''
 
 k, *data = map(int, sys.stdin.read().split())
 i = 0
@@ -53,14 +56,15 @@ while i < len(data):
     i += l + 1
 
 answer = []
+# кортежи - (значение, индекс в num_arrays), при сравнении в heapq будет проверять по первому значению, затем по индексу
 smallest = []
 for j in range(k):
     if num_arrays[j]:
-        heappush(smallest, j)
+        heappush(smallest, (num_arrays[j].pop(), j))
 while smallest:
-    head = heappop(smallest)
-    answer.append(str(num_arrays[head].pop()))
+    num, head = heappop(smallest)
+    answer.append(str(num))
     if num_arrays[head]:
-        heappush(smallest, head)
+        heappush(smallest, (num_arrays[head].pop(), head))
 
 sys.stdout.write(" ".join(answer))
