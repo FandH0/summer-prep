@@ -50,10 +50,10 @@ k, *data = map(int, sys.stdin.read().split())
 i = 0
 num_arrays = []
 while i < len(data):
-    l = data[i]
+    length = data[i]
     # считываю num_arrays в обратном порядке, чтобы использовать pop() для быстрого удаления
-    num_arrays.append(data[i + l: i: -1])
-    i += l + 1
+    num_arrays.append(data[i + length: i: -1])
+    i += length + 1
 
 answer = []
 # кортежи - (значение, индекс в num_arrays), при сравнении в heapq будет проверять по первому значению, затем по индексу
