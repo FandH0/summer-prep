@@ -20,14 +20,12 @@ def recursive_max(step):  # step - индекс с 0, поэтому для по
 
 
 def iterative_max(step):  # step - количество ступенек, поэтому для последней ступени step = n
-    if step == 1:
-        return steps[0]
-    table = [0] * step
-    # при длине больше или равной 2 ссылка на предыдущие ступеньки не выйдет из-за грани и
-    # для первых двух ступеней будет гарантированно иметь нуль в одном из table[i - 1] или table[i - 2]
+    prev_step2, prev_step1 = 0, 0
     for i in range(step):
-        table[i] = max(table[i - 1], table[i - 2]) + steps[i]
-    return table[step - 1]
+        current = max(prev_step2, prev_step1) + steps[i]
+        prev_step2 = prev_step1
+        prev_step1 = current
+    return current
 
 
 n, *steps = map(int, sys.stdin.read().split())
