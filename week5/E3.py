@@ -22,5 +22,6 @@ counts = 0
 for pref in pref_sums:
     counts += prev[pref - s]
     prev[pref] += 1
+answer.append(str(counts))
 
-sys.stdout.write("\n".join(answer) + '\n' + str(counts))
+sys.stdout.write("\n".join(answer))
